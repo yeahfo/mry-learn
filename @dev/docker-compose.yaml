@@ -1,0 +1,29 @@
+services:
+  mongo:
+    image: mongo:4.2.7-bionic
+    environment:
+      - "MONGO_INITDB_DATABASE=mry_local_db"
+    volumes:
+      - ./mry-data-mongo_dev:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    command: --bind_ip_all --replSet rs0
+    ports:
+      - "27017:27017"
+  redis:
+    image: redis/redis-stack:7.2.0-v10
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - ./redis-persistence/:/data
+    environment:
+      REDIS_ARGS: --requirepass redispw
+  postgres:
+    image: debezium/postgres:16-wal2json-zh
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-persistence:/var/lib/postgresql/data
+      - ./init_eventuate_tram_schema.sql:/docker-entrypoint-initdb.d/init_eventuate_tram_schema.sql
+    environment:
+      POSTGRES_PASSWORD: postgres
