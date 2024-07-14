@@ -13,6 +13,7 @@ RUN sed -i 's|dl-cdn.alpinelinux.org|mirrors.ustc.edu.cn|g' /etc/apk/repositorie
 FROM debezium/postgres:16-alpine
 
 COPY --from=builder /usr/local/lib/postgresql /usr/local/lib/postgresql
+ADD init_eventuate_tram_schema.sql /docker-entrypoint-initdb.d/init_eventuate_tram_schema.sql
 ENV TZ Asia/Shanghai
 
 # docker-buildx build -t debezium/postgres:16-alpine-wal2json-zh .
