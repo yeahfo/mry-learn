@@ -9,6 +9,14 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: postgres
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mry_local_db
+
+eventuate:
+  redis:
+    servers: localhost:6379
+    partitions: 1
 
 logging:
   level:

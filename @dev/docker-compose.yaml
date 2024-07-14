@@ -1,6 +1,6 @@
 services:
   mongo:
-    image: mongo:4.2.7-bionic
+    image: mongo:4.4.29-focal
     environment:
       - "MONGO_INITDB_DATABASE=mry_local_db"
     volumes:
@@ -16,8 +16,8 @@ services:
       - "8001:8001"
     volumes:
       - ./redis-persistence/:/data
-    environment:
-      REDIS_ARGS: --requirepass redispw
+#    environment:
+#      REDIS_ARGS: --requirepass redispw
   postgres:
     build:
       context: .
@@ -29,3 +29,23 @@ services:
       - ./init_eventuate_tram_schema.sql:/docker-entrypoint-initdb.d/init_eventuate_tram_schema.sql
     environment:
       POSTGRES_PASSWORD: postgres
+
+  cdc-service:
+    image: eventuateio/eventuate-cdc-service:0.16.0.RELEASE
+    ports:
+      - "8099:8080"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      SPRING_OUTPUT_ANSI_ENABLED: always
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      EVENTUATELOCAL_CDC_READER_NAME: PostgresWalReader
+      SPRING_PROFILES_ACTIVE: PostgresWal,Redis
+      EVENTUATE_REDIS_SERVERS: redis:6379
+      EVENTUATE_REDIS_PARTITIONS: 2
+      EVENTUATE_OUTBOX_ID: 1
+      JAVA_OPTS: -Xmx64m

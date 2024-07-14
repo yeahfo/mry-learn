@@ -23,7 +23,7 @@ class MemberRepositoryImplTest {
 
     @Test
     void findById( ) {
-        Optional< Member > byId = repository.findById( 600220656704949248L );
+        Optional< Member > byId = repository.findById( 600328220981701632L );
         byId.ifPresent( member -> {
             System.err.println( member.id( ) );
             System.err.println( member.name( ) );

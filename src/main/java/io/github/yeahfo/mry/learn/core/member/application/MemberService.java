@@ -8,12 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MemberService {
     private final MemberRepository repository;
-    private final DisruptorRepository disruptorRepository;
     private final MemberDomainEventPublisher domainEventPublisher;
 
-    public MemberService( MemberRepository repository, DisruptorRepository disruptorRepository, MemberDomainEventPublisher domainEventPublisher ) {
+    public MemberService( MemberRepository repository, MemberDomainEventPublisher domainEventPublisher ) {
         this.repository = repository;
-        this.disruptorRepository = disruptorRepository;
         this.domainEventPublisher = domainEventPublisher;
     }
 
@@ -21,7 +19,6 @@ public class MemberService {
     public Member create( final String name ) {
         ResultWithDomainEvents< Member, MemberDomainEvent > resultWithDomainEvents = Member.create( name );
         Member saved = repository.save( resultWithDomainEvents.result );
-        disruptorRepository.save( Disruptor.of( name ) );
         domainEventPublisher.publish( saved, resultWithDomainEvents.events );
         return saved;
     }
