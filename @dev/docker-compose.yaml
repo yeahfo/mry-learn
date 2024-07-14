@@ -21,11 +21,11 @@ services:
   postgres:
     build:
       context: .
-      dockerfile: postgres-alpine-zh/Dockerfile
+      dockerfile: postgres-debian-zh/Dockerfile
     ports:
       - "5432:5432"
     volumes:
       - ./postgres-persistence:/var/lib/postgresql/data
-#      - ./init_eventuate_tram_schema.sql:/docker-entrypoint-initdb.d/init_eventuate_tram_schema.sql
+      - ./init_eventuate_tram_schema.sql:/docker-entrypoint-initdb.d/init_eventuate_tram_schema.sql
     environment:
       POSTGRES_PASSWORD: postgres

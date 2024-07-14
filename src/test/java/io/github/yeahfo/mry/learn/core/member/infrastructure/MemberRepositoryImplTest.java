@@ -1,14 +1,13 @@
 package io.github.yeahfo.mry.learn.core.member.infrastructure;
 
+import com.github.javafaker.Faker;
 import io.github.yeahfo.mry.learn.core.member.domain.Member;
 import io.github.yeahfo.mry.learn.core.member.domain.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import java.util.Locale;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class MemberRepositoryImplTest {
@@ -17,13 +16,14 @@ class MemberRepositoryImplTest {
 
     @Test
     void save( ) {
-        Member member = repository.save( Member.of( ) );
-        System.err.println( member );
+        Member member = repository.save( Member.create( Faker.instance( Locale.CHINA ).name( ).fullName( ) ).result );
+        System.err.println( member.id( ) );
+        System.err.println( member.name( ) );
     }
 
     @Test
     void findById( ) {
-        Optional< Member > byId = repository.findById( 599923299618655232L );
+        Optional< Member > byId = repository.findById( 600220656704949248L );
         byId.ifPresent( member -> {
             System.err.println( member.id( ) );
             System.err.println( member.name( ) );

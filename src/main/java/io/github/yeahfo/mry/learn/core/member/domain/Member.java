@@ -1,19 +1,18 @@
 package io.github.yeahfo.mry.learn.core.member.domain;
 
-import com.github.javafaker.Faker;
+import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import io.github.yeahfo.mry.learn.core.common.utils.SnowflakeIdGenerator;
 
-import java.util.Locale;
 
 public class Member {
     private Long id;
     private String name;
 
-    public static Member of( ) {
+    public static ResultWithDomainEvents< Member, MemberDomainEvent > create( String name ) {
         Member member = new Member( );
         member.id = SnowflakeIdGenerator.newSnowflakeId( );
-        member.name = Faker.instance( Locale.CHINA ).name( ).fullName( );
-        return member;
+        member.name = name;
+        return new ResultWithDomainEvents<>( member, new MemberCreatedEvent( name ) );
     }
 
     public Long id( ) {
