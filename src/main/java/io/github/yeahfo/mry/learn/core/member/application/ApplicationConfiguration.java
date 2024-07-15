@@ -20,6 +20,6 @@ public class ApplicationConfiguration {
     @Bean
     DomainEventDispatcher memberDomainEventDispatcher( DomainEventDispatcherFactory factory,
                                                        MemberEventsSubscriber memberEventsSubscriber ) {
-        return factory.make( "memberDomainEventDispatcher", memberEventsSubscriber.domainEventHandlers( ) );
+        return factory.make( MemberEventsSubscriber.class.getSimpleName( ), memberEventsSubscriber.domainEventHandlers( ) );
     }
 }

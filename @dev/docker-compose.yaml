@@ -4,20 +4,25 @@ services:
     environment:
       - "MONGO_INITDB_DATABASE=mry_local_db"
     volumes:
-      - ./mry-data-mongo_dev:/data/db
+      - ./mongo-persistence:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     command: --bind_ip_all --replSet rs0
     ports:
       - "27017:27017"
+  redis-stream:
+    image: redis/redis-stack:7.2.0-v10
+    ports:
+      - "6380:6379"
+      - "8002:8001"
+    volumes:
+      - ./redis-stream-persistence/:/data
   redis:
     image: redis/redis-stack:7.2.0-v10
     ports:
       - "6379:6379"
       - "8001:8001"
-    volumes:
-      - ./redis-persistence/:/data
-#    environment:
-#      REDIS_ARGS: --requirepass redispw
+    environment:
+      REDIS_ARGS: --requirepass redispw
   postgres:
     build:
       context: .
@@ -32,20 +37,30 @@ services:
 
   cdc-service:
     image: eventuateio/eventuate-cdc-service:0.16.0.RELEASE
-    ports:
-      - "8099:8080"
     depends_on:
       - postgres
-      - redis
+      - redis-stream
+    ports:
+      - '8090:8080'
     environment:
       SPRING_OUTPUT_ANSI_ENABLED: always
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-      EVENTUATELOCAL_CDC_READER_NAME: PostgresWalReader
       SPRING_PROFILES_ACTIVE: PostgresWal,Redis
-      EVENTUATE_REDIS_SERVERS: redis:6379
+      EVENTUATE_REDIS_SERVERS: redis-stream:6379
       EVENTUATE_REDIS_PARTITIONS: 2
-      EVENTUATE_OUTBOX_ID: 1
-      JAVA_OPTS: -Xmx64m
+      LOGGING_LEVEL_IO_EVENTUATE: INFO
+
+      EVENTUATE_CDC_READER_READER1_TYPE: postgres-wal
+      EVENTUATE_CDC_READER_READER1_DATASOURCEURL: jdbc:postgresql://postgres:5432/postgres
+      EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME: postgres
+      EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD: postgres
+      EVENTUATE_CDC_READER_READER1_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+      EVENTUATE_CDC_READER_READER1_OUTBOXID: 1
+      EVENTUATE_CDC_READER_READER1_LEADERSHIPLOCKPATH: /eventuatelocal/cdc/leader/pipeline/1
+
+      EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE: eventuate-tram
+      EVENTUATE_CDC_PIPELINE_PIPELINE1_READER: READER1
+
+#      EVENTUATE_CDC_CLEANER_CLEANER1_PIPELINE: PIPELINE1
+#      EVENTUATE_CDC_CLEANER_CLEANER1_MESSAGE_CLEANING_ENABLED: "true"
+#      EVENTUATE_CDC_CLEANER_CLEANER1_MESSAGES_MAX_AGE_IN_SECONDS: 1
+#      EVENTUATE_CDC_CLEANER_CLEANER1_INTERVAL_IN_SECONDS: 1

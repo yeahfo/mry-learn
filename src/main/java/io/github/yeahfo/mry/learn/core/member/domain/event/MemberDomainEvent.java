@@ -1,4 +1,4 @@
-package io.github.yeahfo.mry.learn.core.member.domain;
+package io.github.yeahfo.mry.learn.core.member.domain.event;
 
 import io.eventuate.tram.events.common.DomainEvent;
 

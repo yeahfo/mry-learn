@@ -15,9 +15,4 @@ public class MemberResource {
         this.memberService = memberService;
     }
 
-    @GetMapping
-    public ResponseEntity< Object > getMember( HttpServletRequest req) {
-        Member member = memberService.create( req.getParameter( req.getParameterMap( ).keySet( ).stream( ).findFirst( ).get( ) ) );
-        return ResponseEntity.ok( member.id() );
-    }
 }

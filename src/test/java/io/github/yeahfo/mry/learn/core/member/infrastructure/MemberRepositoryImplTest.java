@@ -1,12 +1,12 @@
 package io.github.yeahfo.mry.learn.core.member.infrastructure;
 
-import com.github.javafaker.Faker;
 import io.github.yeahfo.mry.learn.core.member.domain.Member;
+import io.github.yeahfo.mry.learn.core.member.domain.MemberFactory;
 import io.github.yeahfo.mry.learn.core.member.domain.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.util.Locale;
+
 import java.util.Optional;
 
 @SpringBootTest
@@ -14,11 +14,10 @@ class MemberRepositoryImplTest {
     @Autowired
     MemberRepository repository;
 
+    @Autowired
+    MemberFactory memberFactory;
     @Test
     void save( ) {
-        Member member = repository.save( Member.create( Faker.instance( Locale.CHINA ).name( ).fullName( ) ).result );
-        System.err.println( member.id( ) );
-        System.err.println( member.name( ) );
     }
 
     @Test
