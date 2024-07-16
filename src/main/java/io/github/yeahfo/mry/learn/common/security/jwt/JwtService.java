@@ -8,8 +8,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import java.nio.charset.StandardCharsets;
@@ -17,8 +19,10 @@ import java.util.Date;
 
 import static io.github.yeahfo.mry.learn.core.common.domain.User.humanUser;
 
+@Getter
 @Setter
 @Validated
+@Component
 public class JwtService {
     @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.issuer:Authorities}" )
     private String issuer;

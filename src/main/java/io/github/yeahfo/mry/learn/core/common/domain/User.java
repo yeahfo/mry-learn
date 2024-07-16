@@ -2,7 +2,7 @@ package io.github.yeahfo.mry.learn.core.common.domain;
 
 import java.util.Objects;
 
-import static io.github.yeahfo.mry.learn.core.common.domain.Role.ROBOT;
+import static io.github.yeahfo.mry.learn.core.common.domain.Role.*;
 import static io.github.yeahfo.mry.learn.core.common.utils.CommonUtils.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
@@ -26,6 +26,14 @@ public record User( String memberId,
         return new User( memberId, name, tenantId, role );
     }
 
+    public boolean isHumanUser() {
+        if (!internalIsLoggedIn()) {
+            return false;
+        }
+
+        return internalIsHumanUser();
+    }
+
     public boolean isLoggedIn( ) {
         return internalIsLoggedIn( );
     }
@@ -38,5 +46,8 @@ public record User( String memberId,
         requireNonNull( tenantId, "TenantId must not be blank." );
 
         return new User( null, null, tenantId, ROBOT );
+    }
+    private boolean internalIsHumanUser() {
+        return role == TENANT_ADMIN || role == TENANT_MEMBER;
     }
 }

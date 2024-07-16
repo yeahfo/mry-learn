@@ -1,23 +1,20 @@
 package io.github.yeahfo.mry.learn.common.security.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.yeahfo.mry.learn.core.member.domain.MemberRepository;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import io.github.yeahfo.mry.learn.common.security.IPCookieUpdater;
+import io.github.yeahfo.mry.learn.common.security.MDCFilter;
+import io.github.yeahfo.mry.learn.common.tracing.TracingService;
+import io.github.yeahfo.mry.learn.core.common.utils.CustomizedObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
-import java.io.IOException;
 
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.HttpMethod.POST;
@@ -25,9 +22,35 @@ import static org.springframework.http.HttpMethod.POST;
 @Configuration
 public class JwtWebSecurityConfiguration {
 
+    private final JwtService jwtService;
+    private final TracingService tracingService;
+    private final IPCookieUpdater ipCookieUpdater;
+    private final JwtCookieFactory jwtCookieFactory;
+    private final CustomizedObjectMapper objectMapper;
+    private final AccessDeniedHandler accessDeniedHandler;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAuthenticationProvider jwtAuthenticationProvider;
+
+    public JwtWebSecurityConfiguration( JwtService jwtService,
+                                        TracingService tracingService,
+                                        IPCookieUpdater ipCookieUpdater,
+                                        JwtCookieFactory jwtCookieFactory,
+                                        CustomizedObjectMapper objectMapper,
+                                        AccessDeniedHandler accessDeniedHandler,
+                                        AuthenticationEntryPoint authenticationEntryPoint,
+                                        JwtAuthenticationProvider jwtAuthenticationProvider ) {
+        this.jwtService = jwtService;
+        this.tracingService = tracingService;
+        this.ipCookieUpdater = ipCookieUpdater;
+        this.jwtCookieFactory = jwtCookieFactory;
+        this.objectMapper = objectMapper;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.jwtAuthenticationProvider = jwtAuthenticationProvider;
+    }
+
     @Bean
-    SecurityFilterChain springSecurityFilterChain( HttpSecurity http,
-                                                   JwtAuthenticationProvider jwtAuthenticationProvider ) throws Exception {
+    SecurityFilterChain springSecurityFilterChain( HttpSecurity http) throws Exception {
         ProviderManager authenticationManager = new ProviderManager( jwtAuthenticationProvider );
         http
                 .authorizeHttpRequests( registry -> registry
@@ -43,47 +66,21 @@ public class JwtWebSecurityConfiguration {
                 .exceptionHandling( customizer -> customizer
                         .accessDeniedHandler( accessDeniedHandler )
                         .authenticationEntryPoint( authenticationEntryPoint ) )
-                .and( )
-                .addFilterAfter( new JwtAuthenticationFilter( authenticationManager, objectMapper, mryTracingService ), BasicAuthenticationFilter.class )
-                .addFilterAfter( new AutoRefreshJwtFilter( jwtService,
-                                jwtCookieFactory,
-                                ipJwtCookieUpdater,
-                                jwtProperties.getAheadAutoRefresh( ) ),
+                .addFilterAfter( new JwtAuthenticationFilter( tracingService, objectMapper, authenticationManager ),
+                        BasicAuthenticationFilter.class )
+                .addFilterAfter( new JwtAutoRefreshFilter( jwtService, jwtCookieFactory, ipCookieUpdater, jwtService.getAheadAutoRefresh( ) ),
                         AuthorizationFilter.class )
-                .addFilterBefore( new MdcFilter( ), ExceptionTranslationFilter.class )
-                .httpBasic( ).disable( )
-                .headers( ).and( )
-                .cors( ).disable( )
-                .anonymous( ).authenticationFilter( new JwtAnonymousAuthenticationFilter( ) ).and( )
-                .csrf( ).disable( )
-                .servletApi( ).disable( )
-                .logout( ).disable( )
-                .sessionManagement( ).disable( )
-                .securityContext( ).disable( )
-                .requestCache( ).disable( )
-                .formLogin( ).disable( );
-        ;
+                .addFilterBefore( new MDCFilter( ), ExceptionTranslationFilter.class )
+                .httpBasic( AbstractHttpConfigurer::disable )
+                .cors( AbstractHttpConfigurer::disable )
+                .anonymous( customizer -> customizer.authenticationFilter( new JwtAnonymousAuthenticationFilter( ) ) )
+                .csrf( AbstractHttpConfigurer::disable )
+                .servletApi( AbstractHttpConfigurer::disable )
+                .logout( AbstractHttpConfigurer::disable )
+                .sessionManagement( AbstractHttpConfigurer::disable )
+                .securityContext( AbstractHttpConfigurer::disable )
+                .requestCache( AbstractHttpConfigurer::disable )
+                .formLogin( AbstractHttpConfigurer::disable );
         return http.build( );
-    }
-
-    @Bean
-    AccessDeniedHandler accessDeniedHandler( ) {
-        return new AccessDeniedHandler( ) {
-            @Override
-            public void handle( HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException ) throws IOException, ServletException {
-
-            }
-        };
-    }
-
-
-    @Bean
-    JwtAuthenticationProvider jwtAuthenticationProvider( JwtService jwtService ) {
-        return new JwtAuthenticationProvider( jwtService );
-    }
-
-    @Bean
-    JwtService jwtService( MemberRepository memberRepository ) {
-        return new JwtService( memberRepository );
     }
 }
