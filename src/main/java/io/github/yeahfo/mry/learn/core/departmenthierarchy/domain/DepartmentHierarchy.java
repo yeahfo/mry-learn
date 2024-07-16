@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.DEPARTMENT_HIERARCHY_TOO_DEEP;
 import static io.github.yeahfo.mry.learn.core.common.utils.MryConstants.MAX_GROUP_HIERARCHY_LEVEL;
-import static io.github.yeahfo.mry.learn.core.common.utils.SnowflakeIdGenerator.newSnowflakeId;
+import static io.github.yeahfo.mry.learn.core.common.utils.SnowflakeIdGenerator.newSnowflakeIdAsString;
 
 public class DepartmentHierarchy extends AggregateRoot {
     private IdTree idTree;
@@ -25,11 +25,11 @@ public class DepartmentHierarchy extends AggregateRoot {
         addOpsLog( "新建", user );
     }
 
-    private static Long newDepartmentHierarchyId( ) {
-        return newSnowflakeId( );
+    private static String newDepartmentHierarchyId( ) {
+        return newSnowflakeIdAsString( );
     }
 
-    public Set< String > directChildDepartmentIdsUnder( Long parentDepartmentId ) {
+    public Set< String > directChildDepartmentIdsUnder( String parentDepartmentId ) {
         return this.hierarchy.directChildIdsUnder( parentDepartmentId );
     }
 

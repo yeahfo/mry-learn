@@ -1,4 +1,4 @@
-package io.github.yeahfo.mry.learn.core.tenant;
+package io.github.yeahfo.mry.learn.core.tenant.domain;
 
 import io.github.yeahfo.mry.learn.core.app.domain.page.control.ControlType;
 import io.github.yeahfo.mry.learn.core.common.exception.MryException;

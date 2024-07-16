@@ -31,7 +31,7 @@ public class MemberFactory {
     }
 
     public ResultWithDomainEvents< Member, MemberDomainEvent > create( String name,
-                                                                       List< Long > departmentIds,
+                                                                       List< String > departmentIds,
                                                                        String mobile,
                                                                        String email,
                                                                        String password,
@@ -40,13 +40,13 @@ public class MemberFactory {
     }
 
     public ResultWithDomainEvents< Member, MemberDomainEvent > create( String name,
-                                                                       List< Long > departmentIds,
+                                                                       List< String > departmentIds,
                                                                        String mobile,
                                                                        String email,
                                                                        String password,
                                                                        String customId,
                                                                        User user ) {
-        Long tenantId = user.tenantId( );
+        String tenantId = user.tenantId( );
         if ( departmentRepository.notAllDepartmentsExist( departmentIds, tenantId ) ) {
             throw new MryException( NOT_ALL_DEPARTMENTS_EXITS, "添加成员失败，有部门不存在。", "name", name, "departmentIds", departmentIds );
         }

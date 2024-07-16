@@ -8,7 +8,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
- * Resolve stingRedisTemplate conflict: io.eventuate.messaging.redis.spring.common.CommonRedisConfiguration#redisTemplate(org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory)
+ * Resolve stingRedisTemplate conflict:
+ *      io.eventuate.messaging.redis.spring.common.CommonRedisConfiguration#redisTemplate(org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory)
  */
 @Configuration
 public class CommonRedisConfiguration {

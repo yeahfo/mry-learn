@@ -105,6 +105,10 @@ public class SnowflakeIdGenerator {
         return SnowflakeIdGenerator.getInstance( ).getNextId( );
     }
 
+    public static String newSnowflakeIdAsString( ) {
+        return String.valueOf( newSnowflakeId( ) );
+    }
+
     private synchronized long getNextId( ) {
         long currentTimestamp = getCurrentTimestamp( );
         // if clock moved back we may wait

@@ -20,9 +20,7 @@ public class MemberEventsSubscriber {
         System.err.println( "memberCreatedEventHandler begin -> " );
         System.err.println( envelope.getAggregateId( ) );
         System.err.println( envelope.getAggregateType( ) );
-        System.err.println( envelope.getEvent( ).user( ) );
+        System.err.println( envelope.getEvent( ).trigger( ) );
         System.err.println( "<- memberCreatedEventHandler end." );
     }
-
-    ;
 }

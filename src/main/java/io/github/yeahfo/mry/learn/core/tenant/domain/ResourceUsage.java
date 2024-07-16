@@ -1,4 +1,4 @@
-package io.github.yeahfo.mry.learn.core.tenant;
+package io.github.yeahfo.mry.learn.core.tenant.domain;
 
 import lombok.Builder;
 

@@ -12,7 +12,7 @@ public class Department extends AggregateRoot {
     private String customId;
 
     public Department( String name, String customId, User user ) {
-        super( SnowflakeIdGenerator.newSnowflakeId( ), user );
+        super( SnowflakeIdGenerator.newSnowflakeIdAsString( ), user );
         this.name = name;
         this.managers = List.of( );
         this.customId = customId;

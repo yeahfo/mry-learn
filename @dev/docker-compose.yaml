@@ -9,13 +9,13 @@ services:
     command: --bind_ip_all --replSet rs0
     ports:
       - "27017:27017"
-  redis-stream:
+  redis-streams:
     image: redis/redis-stack:7.2.0-v10
     ports:
       - "6380:6379"
       - "8002:8001"
     volumes:
-      - ./redis-stream-persistence/:/data
+      - ./redis-streams-persistence/:/data
   redis:
     image: redis/redis-stack:7.2.0-v10
     ports:
@@ -39,13 +39,13 @@ services:
     image: eventuateio/eventuate-cdc-service:0.16.0.RELEASE
     depends_on:
       - postgres
-      - redis-stream
+      - redis-streams
     ports:
       - '8090:8080'
     environment:
       SPRING_OUTPUT_ANSI_ENABLED: always
       SPRING_PROFILES_ACTIVE: PostgresWal,Redis
-      EVENTUATE_REDIS_SERVERS: redis-stream:6379
+      EVENTUATE_REDIS_SERVERS: redis-streams:6379
       EVENTUATE_REDIS_PARTITIONS: 2
       LOGGING_LEVEL_IO_EVENTUATE: INFO
 

@@ -1,5 +1,6 @@
 package io.github.yeahfo.mry.learn.core.member.infrastructure;
 
+import io.github.yeahfo.mry.learn.core.common.utils.SnowflakeIdGenerator;
 import io.github.yeahfo.mry.learn.core.member.domain.Member;
 import io.github.yeahfo.mry.learn.core.member.domain.MemberFactory;
 import io.github.yeahfo.mry.learn.core.member.domain.MemberRepository;
@@ -16,13 +17,14 @@ class MemberRepositoryImplTest {
 
     @Autowired
     MemberFactory memberFactory;
+
     @Test
     void save( ) {
     }
 
     @Test
     void findById( ) {
-        Optional< Member > byId = repository.findById( 600328220981701632L );
+        Optional< Member > byId = repository.findById( SnowflakeIdGenerator.newSnowflakeIdAsString( ) );
         byId.ifPresent( member -> {
             System.err.println( member.id( ) );
             System.err.println( member.name( ) );

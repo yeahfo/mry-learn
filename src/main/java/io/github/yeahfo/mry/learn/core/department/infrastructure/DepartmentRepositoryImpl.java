@@ -26,12 +26,12 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
     }
 
     @Override
-    public Optional< Department > findById( Long id ) {
+    public Optional< Department > findById( String id ) {
         return mongoRepository.findById( id );
     }
 
     @Override
-    public boolean notAllDepartmentsExist( List< Long > departmentIds, Long tenantId ) {
+    public boolean notAllDepartmentsExist( List< String > departmentIds, String tenantId ) {
         Objects.requireNonNull( tenantId, "Tenant id must not be null" );
         if ( isEmpty( departmentIds ) ) {
             return false;
@@ -42,7 +42,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
     }
 
     @Override
-    public List< Department > tenantAllDepartments( Long tenantId ) {
+    public List< Department > tenantAllDepartments( String tenantId ) {
         return mongoRepository.findAllByTenantId( tenantId );
     }
 }

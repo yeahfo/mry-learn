@@ -1,15 +1,20 @@
-package io.github.yeahfo.mry.learn.core.tenant;
+package io.github.yeahfo.mry.learn.core.tenant.domain;
 
 import io.github.yeahfo.mry.learn.core.common.domain.AggregateRoot;
 import io.github.yeahfo.mry.learn.core.common.domain.UploadedFile;
 import io.github.yeahfo.mry.learn.core.common.domain.User;
 import io.github.yeahfo.mry.learn.core.common.domain.invoice.InvoiceTitle;
 import io.github.yeahfo.mry.learn.core.order.domain.delivery.Consignee;
+import io.github.yeahfo.mry.learn.core.plan.domain.PlanType;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static io.github.yeahfo.mry.learn.core.common.utils.SnowflakeIdGenerator.newSnowflakeIdAsString;
+import static java.time.LocalDate.ofInstant;
+import static java.time.ZoneId.systemDefault;
 
 public class Tenant extends AggregateRoot {
     private static final Set< String > FORBIDDEN_SUBDOMAIN_PREFIXES = Set.of( "www", "ww", "help", "helps", "api", "apis", "image", "images",
@@ -38,7 +43,15 @@ public class Tenant extends AggregateRoot {
         this.apiSetting = ApiSetting.init( );
         this.active = true;
         this.consignees = new ArrayList<>( 3 );
-//        this.raiseEvent( new TenantCreatedEvent(  user ) );
         addOpsLog( "注册", user );
+    }
+
+    public static String newTenantId( ) {
+        return newSnowflakeIdAsString( );
+    }
+
+    public void updatePlanType( PlanType planType, Instant expireAt, User user ) {
+        this.packages.updatePlanType( planType, expireAt );
+        addOpsLog( "设置套餐为" + planType.getName( ) + "(" + ofInstant( expireAt, systemDefault( ) ) + "过期)", user );
     }
 }

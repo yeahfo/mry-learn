@@ -4,8 +4,8 @@ import io.github.yeahfo.mry.learn.core.common.domain.AggregateRootRepository;
 
 import java.util.List;
 
-public interface DepartmentRepository extends AggregateRootRepository< Department, Long > {
-    boolean notAllDepartmentsExist( List< Long > departmentIds, Long tenantId );
+public interface DepartmentRepository extends AggregateRootRepository< Department, String > {
+    boolean notAllDepartmentsExist( List< String > departmentIds, String tenantId );
 
-    List< Department > tenantAllDepartments( Long tenantId );
+    List< Department > tenantAllDepartments( String tenantId );
 }

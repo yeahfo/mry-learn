@@ -7,12 +7,12 @@ import java.util.Set;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static io.github.yeahfo.mry.learn.core.common.domain.idnode.IdTree.NODE_ID_SEPARATOR;
-import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public record IdTreeHierarchy( @NotEmpty( message = "Hierarchy must not be null." ) Map< String, String > schemas ) {
 
-    public Set< String > directChildIdsUnder( Long parentId ) {
-        if ( isNull( parentId ) ) {
+    public Set< String > directChildIdsUnder( String parentId ) {
+        if ( isBlank( parentId ) ) {
             return this.schemas.values( ).stream( )
                     .filter( value -> !value.contains( NODE_ID_SEPARATOR ) )
                     .collect( toImmutableSet( ) );

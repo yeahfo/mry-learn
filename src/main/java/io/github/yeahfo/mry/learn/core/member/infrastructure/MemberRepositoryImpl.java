@@ -3,10 +3,13 @@ package io.github.yeahfo.mry.learn.core.member.infrastructure;
 import io.github.yeahfo.mry.learn.core.member.domain.Member;
 import io.github.yeahfo.mry.learn.core.member.domain.MemberRepository;
 import io.github.yeahfo.mry.learn.core.member.infrastructure.mongo.MemberMongoRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import java.util.Locale;
 import java.util.Optional;
+
+import static io.github.yeahfo.mry.learn.core.common.utils.CommonUtils.requireNonBlank;
+import static io.github.yeahfo.mry.learn.core.common.utils.MryConstants.MEMBER_CACHE;
 
 @Repository
 public class MemberRepositoryImpl implements MemberRepository {
@@ -21,8 +24,9 @@ public class MemberRepositoryImpl implements MemberRepository {
         return mongoRepository.save( member );
     }
 
+    @Cacheable( value = MEMBER_CACHE, key = "#id" )
     @Override
-    public Optional< Member > findById( Long id ) {
+    public Optional< Member > findById( String id ) {
         return mongoRepository.findById( id );
     }
 
@@ -37,7 +41,13 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public boolean existsByCustomId( String customId, Long tenantId ) {
+    public boolean existsByCustomId( String customId, String tenantId ) {
         return mongoRepository.existsByCustomId( customId );
+    }
+
+    @Override
+    public boolean existsByMobileOrEmail( String mobileOrEmail ) {
+        requireNonBlank( mobileOrEmail, "Mobile or email must not be blank." );
+        return mongoRepository.existsByMobileOrEmail( mobileOrEmail, mobileOrEmail );
     }
 }

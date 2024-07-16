@@ -23,16 +23,16 @@ public class DepartmentFactory {
     }
 
     public ResultWithDomainEvents< Department, DepartmentDomainEvent > create( String name,
-                                                                               Long tenantId,
-                                                                               Long parentDepartmentId,
+                                                                               String tenantId,
+                                                                               String parentDepartmentId,
                                                                                DepartmentHierarchy departmentHierarchy,
                                                                                User user ) {
         return this.create( name, tenantId, parentDepartmentId, departmentHierarchy, null, user );
     }
 
     public ResultWithDomainEvents< Department, DepartmentDomainEvent > create( String name,
-                                                                               Long tenantId,
-                                                                               Long parentDepartmentId,
+                                                                               String tenantId,
+                                                                               String parentDepartmentId,
                                                                                DepartmentHierarchy departmentHierarchy,
                                                                                String customId,
                                                                                User user ) {
@@ -41,8 +41,8 @@ public class DepartmentFactory {
     }
 
     private void checkNameDuplication( String name,
-                                       Long tenantId,
-                                       Long parentDepartmentId,
+                                       String tenantId,
+                                       String parentDepartmentId,
                                        DepartmentHierarchy departmentHierarchy ) {
         Set< String > siblingDepartmentIds = departmentHierarchy.directChildDepartmentIdsUnder( parentDepartmentId );
         Set< String > siblingDepartmentNames = departmentRepository.tenantAllDepartments( tenantId ).stream( )
