@@ -4,4 +4,6 @@ import io.github.yeahfo.mry.learn.core.common.domain.AggregateRootRepository;
 
 public interface TenantRepository extends AggregateRootRepository< Tenant, String > {
     boolean exists( String tenantId );
+
+    PackagesStatus packagesStatusOf( String tenantId );
 }

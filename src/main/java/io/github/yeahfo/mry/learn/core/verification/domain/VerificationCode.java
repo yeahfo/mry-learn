@@ -24,7 +24,15 @@ public class VerificationCode extends AggregateRoot {
         this.usedCount = 0;
     }
 
-    private static String newVerificationCodeId( ) {
+    public String mobileEmail( ) {
+        return mobileEmail;
+    }
+
+    public String code( ) {
+        return code;
+    }
+
+    public static String newVerificationCodeId( ) {
         return newSnowflakeIdAsString( );
     }
 

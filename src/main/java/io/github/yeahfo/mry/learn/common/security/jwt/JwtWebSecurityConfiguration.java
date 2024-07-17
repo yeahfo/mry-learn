@@ -50,7 +50,7 @@ public class JwtWebSecurityConfiguration {
     }
 
     @Bean
-    SecurityFilterChain springSecurityFilterChain( HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain( HttpSecurity http ) throws Exception {
         ProviderManager authenticationManager = new ProviderManager( jwtAuthenticationProvider );
         http
                 .authorizeHttpRequests( registry -> registry
@@ -61,6 +61,26 @@ public class JwtWebSecurityConfiguration {
                         .requestMatchers( POST, "/submissions" ).permitAll( )
                         .requestMatchers( POST, "/submissions/auto-calculate/number-input" ).permitAll( )
                         .requestMatchers( POST, "/submissions/auto-calculate/item-status" ).permitAll( )
+                        .requestMatchers( "/about", "/favicon.ico", "/error", "/MP_verify_qXC2acLZ7a7qm3Xp.txt",
+                                "/local-manual-test/orders/**",
+                                "/local-manual-test/receive-webhook",
+                                "/api-testing/webhook", "/api-testing/orders/**", "/apptemplates/**" ).permitAll( )
+                        .requestMatchers( GET, "/plans" ).permitAll( )
+                        .requestMatchers( GET, "/printing-products" ).permitAll( )
+                        .requestMatchers( GET, "/mobile-wx/auth2-callback" ).permitAll( )
+                        .requestMatchers( GET, "/pc-wx/auth2-callback" ).permitAll( )
+                        .requestMatchers( GET, "/wx/mobile-info" ).permitAll( )
+                        .requestMatchers( GET, "/wx/pc-info" ).permitAll( )
+                        .requestMatchers( POST, "/wx/jssdk-config" ).permitAll( )
+                        .requestMatchers( POST, "/preorders/pay-callback/wxpay" ).permitAll( )
+                        .requestMatchers( POST, "/verification-codes/for-register" ).permitAll( )
+                        .requestMatchers( POST, "/verification-codes/for-login" ).permitAll( )
+                        .requestMatchers( POST, "/verification-codes/for-findback-password" ).permitAll( )
+                        .requestMatchers( POST, "/login" ).permitAll( )
+                        .requestMatchers( POST, "/verification-code-login" ).permitAll( )
+                        .requestMatchers( POST, "/members/findback-password" ).permitAll( )
+                        .requestMatchers( POST, "/registrations" ).permitAll( )
+                        .requestMatchers( GET, "/tenants/public-profile/*" ).permitAll( )
                         .anyRequest( ).authenticated( ) )
                 .authenticationManager( authenticationManager )
                 .exceptionHandling( customizer -> customizer

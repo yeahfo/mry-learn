@@ -1,6 +1,7 @@
 package io.github.yeahfo.mry.learn.core.tenant.domain;
 
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import static java.time.ZoneId.systemDefault;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static org.apache.commons.collections4.MapUtils.isEmpty;
 
+@Getter
 @Builder
 public class ResourceUsage {
     private int appCount;//已创建应用总数

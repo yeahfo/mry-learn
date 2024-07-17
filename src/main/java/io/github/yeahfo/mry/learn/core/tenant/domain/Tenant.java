@@ -54,4 +54,12 @@ public class Tenant extends AggregateRoot {
         this.packages.updatePlanType( planType, expireAt );
         addOpsLog( "设置套餐为" + planType.getName( ) + "(" + ofInstant( expireAt, systemDefault( ) ) + "过期)", user );
     }
+
+    public void useSms( ) {
+        this.resourceUsage.increaseSmsSentCountForCurrentMonth( );
+
+        if ( this.resourceUsage.getSmsSentCountForCurrentMonth( ) > this.packages.effectiveMaxSmsCountPerMonth( ) ) {
+            this.packages.tryUseExtraRemainSms( );
+        }
+    }
 }

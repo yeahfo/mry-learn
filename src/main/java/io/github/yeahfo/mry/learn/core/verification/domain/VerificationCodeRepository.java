@@ -6,4 +6,8 @@ import java.util.Optional;
 
 public interface VerificationCodeRepository extends AggregateRootRepository< VerificationCode, String > {
     Optional< VerificationCode > findByMobileEmailAndCodeAndType( String mobileEmail, String code, VerificationCodeType type );
+
+    boolean existsWithinOneMinutes( String mobileEmail, VerificationCodeType type );
+
+    long totalCodeCountOfTodayFor( String mobileEmail );
 }
