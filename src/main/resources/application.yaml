@@ -4,6 +4,9 @@ spring:
   output:
     ansi:
       enabled: always
+  threads:
+    virtual:
+      enabled: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -20,7 +23,30 @@ spring:
     oauth2:
       authorizationserver:
         cookie-setup-domain: dev.aa.com
-
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: isfong@qq.com
+    password: gtkxmcoeupjhbjhf
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+  # SPRING_MESSAGES_ALI_YUN_ACCESS_KEY
+  # SPRING_MESSAGES_ALI_YUN_SECRET
+  # SPRING_MESSAGES_ALI_YUN_SMS_SIGN_NAME
+  # SPRING_MESSAGES_ALI_YUN_SMS_TEMPLATE_CODE
+  messages:
+    ali-yun:
+      sms-sign-name: masked
+      sms-template-code: masked
+      access-key: masked
+      secret: masked
 eventuate:
   redis:
     # noinspection SpringBootApplicationYaml

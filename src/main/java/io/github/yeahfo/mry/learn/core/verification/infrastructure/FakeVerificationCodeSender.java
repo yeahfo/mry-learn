@@ -13,7 +13,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Component
-@Profile( "!prod" )
+@Profile( "dev" )
 @RequiredArgsConstructor
 public class FakeVerificationCodeSender implements VerificationCodeSender {
     private final TenantSmsUsageCountTask tenantSmsUsageCountTask;
