@@ -24,16 +24,18 @@ services:
     environment:
       REDIS_ARGS: --requirepass redispw
   postgres:
-    build:
-      context: .
-      dockerfile: postgres-debian-zh/Dockerfile
+    image: registry.cn-guangzhou.aliyuncs.com/isfong/postgresql:16-wal2json
+#    build:
+#      context: .
+#      dockerfile: postgres-debian-zh/Dockerfile
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres-persistence:/var/lib/postgresql/data
+      - ./postgres-persistence:/bitnami/postgresql
       - ./init_eventuate_tram_schema.sql:/docker-entrypoint-initdb.d/init_eventuate_tram_schema.sql
     environment:
       POSTGRES_PASSWORD: postgres
+      POSTGRESQL_EXTRA_FLAGS: "-c wal_level=logical"
 
   cdc-service:
     image: eventuateio/eventuate-cdc-service:0.16.0.RELEASE
