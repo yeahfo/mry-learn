@@ -26,8 +26,10 @@ spring:
   mail:
     host: smtp.qq.com
     port: 465
-    username: isfong@qq.com
-    password: gtkxmcoeupjhbjhf
+    # SPRING_MAIL_USERNAME=env;
+    # SPRING_MAIL_PASSWORD=env;
+    username: masked
+    password: masked
     properties:
       mail:
         smtp:
