@@ -35,7 +35,10 @@ services:
       - ./init_eventuate_tram_schema.sql:/docker-entrypoint-initdb.d/init_eventuate_tram_schema.sql
     environment:
       POSTGRES_PASSWORD: postgres
-      POSTGRESQL_EXTRA_FLAGS: "-c wal_level=logical"
+      POSTGRESQL_EXTRA_FLAGS: >
+        -c wal_level=logical 
+        -c timezone=Asia/Shanghai 
+        -c log_timezone=Asia/Shanghai
 
   cdc-service:
     image: eventuateio/eventuate-cdc-service:0.16.0.RELEASE

@@ -61,10 +61,19 @@ public class JwtWebSecurityConfiguration {
                         .requestMatchers( POST, "/submissions" ).permitAll( )
                         .requestMatchers( POST, "/submissions/auto-calculate/number-input" ).permitAll( )
                         .requestMatchers( POST, "/submissions/auto-calculate/item-status" ).permitAll( )
-                        .requestMatchers( "/about", "/favicon.ico", "/error", "/MP_verify_qXC2acLZ7a7qm3Xp.txt",
+                        .requestMatchers(
+                                "/swagger-ui/*",
+                                "/v3/api-docs",
+                                "/v3/api-docs/*",
+                                "/about",
+                                "/favicon.ico",
+                                "/error",
+                                "/MP_verify_qXC2acLZ7a7qm3Xp.txt",
                                 "/local-manual-test/orders/**",
                                 "/local-manual-test/receive-webhook",
-                                "/api-testing/webhook", "/api-testing/orders/**", "/apptemplates/**" ).permitAll( )
+                                "/api-testing/webhook",
+                                "/api-testing/orders/**",
+                                "/apptemplates/**" ).permitAll( )
                         .requestMatchers( GET, "/plans" ).permitAll( )
                         .requestMatchers( GET, "/printing-products" ).permitAll( )
                         .requestMatchers( GET, "/mobile-wx/auth2-callback" ).permitAll( )
