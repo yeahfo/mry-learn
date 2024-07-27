@@ -1,8 +1,8 @@
 services:
   mongo:
-    image: mongo:4.4.29-focal
+    image: mongo:7.0.12
     environment:
-      - "MONGO_INITDB_DATABASE=mry_local_db"
+      MONGODB_DATABASE: local_db
     volumes:
       - ./mongo-persistence:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
@@ -24,10 +24,10 @@ services:
     environment:
       REDIS_ARGS: --requirepass redispw
   postgres:
-    image: registry.cn-guangzhou.aliyuncs.com/isfong/postgresql:16-wal2json
-#    build:
-#      context: .
-#      dockerfile: postgres-debian-zh/Dockerfile
+#    image: registry.cn-guangzhou.aliyuncs.com/isfong/postgresql:16-wal2json
+    build:
+      context: .
+      dockerfile: postgres-bitnami-wal2json/Dockerfile
     ports:
       - "5432:5432"
     volumes:

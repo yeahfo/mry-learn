@@ -29,6 +29,9 @@ public abstract class AggregateRoot implements Identified {
     @Getter( PRIVATE )
     protected Long _version;//版本号，实现乐观锁
 
+    protected AggregateRoot( ) {
+    }
+
     protected AggregateRoot( String id, User user ) {
         requireNonNull( id, "ID must not be blank." );
         requireNonNull( user, "User must not be null." );

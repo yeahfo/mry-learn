@@ -16,6 +16,9 @@ public class VerificationCode extends AggregateRoot {
     private VerificationCodeType type;//验证码用于的类型
     private int usedCount;//已经使用的次数，使用次数不能超过3次
 
+    public VerificationCode( ) {
+    }
+
     public VerificationCode( String mobileEmail, VerificationCodeType type, String tenantId, User user ) {
         super( newVerificationCodeId( ), isNotBlank( tenantId ) ? tenantId : NO_TENANT_ID, user );
         this.mobileEmail = mobileEmail;

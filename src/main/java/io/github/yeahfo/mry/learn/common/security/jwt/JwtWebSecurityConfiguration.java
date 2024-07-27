@@ -64,6 +64,7 @@ public class JwtWebSecurityConfiguration {
                         .requestMatchers(
                                 "/swagger-ui/*",
                                 "/v3/api-docs",
+                                "/v3/api-docs.yaml",
                                 "/v3/api-docs/*",
                                 "/about",
                                 "/favicon.ico",

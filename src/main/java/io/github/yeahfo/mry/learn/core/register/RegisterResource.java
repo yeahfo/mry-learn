@@ -25,6 +25,7 @@ public class RegisterResource {
 
     @PostMapping
     public ResponseEntity< RegisteredRepresentation > register( @RequestBody @Valid RegisterCommand command ) {
-        return ResponseEntity.status( CREATED ).body( commandService.register( command ) );
+        RegisteredRepresentation register = commandService.register( command );
+        return ResponseEntity.status( CREATED ).body( register );
     }
 }

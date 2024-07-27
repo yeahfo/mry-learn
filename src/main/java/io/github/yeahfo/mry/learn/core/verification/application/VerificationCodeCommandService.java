@@ -37,7 +37,7 @@ public class VerificationCodeCommandService {
             return newVerificationCodeId( );
         }
         String verificationCodeId = createVerificationCode( mobileOrEmail, REGISTER, null, NOUSER );
-        log.info( "Created verification code[{}] for register for [{}].", verificationCodeId, maskMobileOrEmail( command.mobileOrEmail( ) ) );
+        log.info( "Created verification code id[{}] for register for [{}].", verificationCodeId, maskMobileOrEmail( command.mobileOrEmail( ) ) );
         return verificationCodeId;
     }
 

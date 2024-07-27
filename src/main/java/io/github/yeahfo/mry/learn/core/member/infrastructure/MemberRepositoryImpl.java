@@ -48,6 +48,12 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public boolean existsByMobileOrEmail( String mobileOrEmail ) {
         requireNonBlank( mobileOrEmail, "Mobile or email must not be blank." );
-        return mongoRepository.existsByMobileOrEmail( mobileOrEmail, mobileOrEmail );
+        boolean b = mongoRepository.existsByMobileOrEmail( mobileOrEmail, mobileOrEmail );
+        return b;
+    }
+
+    @Override
+    public Optional< Member > findByMobileOrEmail( String mobileOrEmail ) {
+        return mongoRepository.findByMobileOrEmail( mobileOrEmail, mobileOrEmail );
     }
 }

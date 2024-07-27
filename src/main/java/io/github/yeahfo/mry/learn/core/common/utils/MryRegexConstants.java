@@ -1,10 +1,12 @@
 package io.github.yeahfo.mry.learn.core.common.utils;
 
+
 public class MryRegexConstants {
     public static final String MOBILE_PATTERN = "^[1]([3-9])[0-9]{9}$";
-    public static final String EMAIL_PATTERN = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
-    public static final String PASSWORD_PATTERN = "^[A-Za-z\\d!@#$%^&*()_+]{8,20}$";
+    public static final String EMAIL_PATTERN = "^\\S+@\\S+\\.\\S+$";
+//    public static final String PASSWORD_PATTERN = "^[A-Za-z\\d!@#$%^&*()_+]{8,20}$";
     public static final String VERIFICATION_CODE_PATTERN = "^[0-9]{6}$";
+    public static final String PASSWORD_PATTERN = VERIFICATION_CODE_PATTERN;
     public static final String DATE_PATTERN = "^((19|20)\\d\\d)-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$";
     public static final String TIME_PATTERN = "([01]?[0-9]|2[0-3]):[0-5][0-9]";
     public static final String CONTROL_ALIAS_PATTERN = "^[A-Za-z]{1,10}$";

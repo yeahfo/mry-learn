@@ -14,7 +14,8 @@ spring:
     password: postgres
   data:
     mongodb:
-      uri: mongodb://localhost:27017/mry_local_db
+      uri: mongodb://localhost:27017/local_db
+      field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
     redis:
       host: localhost
       port: 6379
@@ -23,6 +24,23 @@ spring:
     oauth2:
       authorizationserver:
         cookie-setup-domain: dev.aa.com
+      client:
+        registration:
+          wechat-pc:
+            client-id: masked
+            client-secret: masked
+          wechat-mobile:
+            client-id: masked
+            client-secret: masked
+        provider:
+          wechat-pc:
+            user-info-uri: https://api.weixin.qq.com/sns/userinfo
+            token-uri: https://api.weixin.qq.com/sns/oauth2/access_token
+            user-info-authentication-method: authorization_code
+          wechat-mobile:
+            user-info-uri: https://api.weixin.qq.com/sns/userinfo
+            token-uri: https://api.weixin.qq.com/sns/oauth2/access_token
+            user-info-authentication-method: authorization_code
   mail:
     host: smtp.qq.com
     port: 465

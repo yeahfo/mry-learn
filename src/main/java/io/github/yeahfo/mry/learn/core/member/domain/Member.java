@@ -11,14 +11,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.github.yeahfo.mry.learn.core.common.domain.Role.TENANT_ADMIN;
 import static io.github.yeahfo.mry.learn.core.common.domain.Role.TENANT_MEMBER;
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.*;
 import static io.github.yeahfo.mry.learn.core.common.utils.SnowflakeIdGenerator.newSnowflakeIdAsString;
+import static io.github.yeahfo.mry.learn.core.common.utils.UuidGenerator.newShortUuid;
 import static java.time.LocalDate.now;
 import static lombok.AccessLevel.PRIVATE;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -108,6 +108,81 @@ public class Member extends AggregateRoot {
 
     public Role role( ) {
         return role;
+    }
+
+    public String password( ) {
+        return password;
+    }
+
+    public void recordFailedLogin( ) {
+        this.failedLoginCount.recordFailedLogin( );
+    }
+
+    public User toUser( ) {
+        return User.humanUser( id, name, tenantId, role );
+    }
+
+    public void bindMobileWx( String wxUnionId, String mobileWxOpenId, User user ) {
+        this.wxUnionId = wxUnionId;
+        this.mobileWxOpenId = mobileWxOpenId;
+        addOpsLog( "绑定手机微信:" + wxUnionId, user );
+    }
+
+    public boolean updateMobileWxInfo( String mobileWxOpenId, String nickname, String avatarImageUrl, User user ) {
+        AtomicBoolean updated = new AtomicBoolean( false );
+        Optional.ofNullable( mobileWxOpenId ).filter( when -> !Objects.equals( when, this.mobileWxOpenId ) ).ifPresent( then -> {
+            this.mobileWxOpenId = then;
+            updated.set( true );
+        } );
+        updateWxNickNameAndAvatar( nickname, avatarImageUrl, updated );
+        if ( updated.get( ) ) {
+            this.addOpsLog( "更新手机微信信息", user );
+        }
+        return updated.get( );
+    }
+
+    private String avatarImageUrl( ) {
+        return this.avatar != null ? this.avatar.fileUrl( ) : null;
+    }
+
+    private UploadedFile wxAvatarOf( String avatarImageUrl ) {
+        return UploadedFile.builder( )
+                .id( newShortUuid( ) )
+                .name( WX_HEAD_IMAGE )
+                .type( "image/jpeg" )
+                .fileUrl( avatarImageUrl )
+                .size( 100 )
+                .build( );
+    }
+
+    public void bindPcWx( String wxUnionId, String pcWxOpenId, User user ) {
+        this.wxUnionId = wxUnionId;
+        this.pcWxOpenId = pcWxOpenId;
+        addOpsLog( "绑定PC微信:" + wxUnionId, user );
+    }
+
+    public boolean updatePcWxInfo( String pcWxOpenId, String nickname, String avatarImageUrl, User user ) {
+        AtomicBoolean updated = new AtomicBoolean( false );
+        Optional.ofNullable( pcWxOpenId ).filter( when -> !Objects.equals( when, this.pcWxOpenId ) ).ifPresent( then -> {
+            this.pcWxOpenId = then;
+            updated.set( true );
+        } );
+        updateWxNickNameAndAvatar( nickname, avatarImageUrl, updated );
+        if ( updated.get( ) ) {
+            this.addOpsLog( "更新PC微信信息", user );
+        }
+        return updated.get( );
+    }
+
+    private void updateWxNickNameAndAvatar( String nickname, String avatarImageUrl, AtomicBoolean updated ) {
+        Optional.ofNullable( nickname ).filter( when -> !Objects.equals( when, this.wxNickName ) ).ifPresent( then -> {
+            this.wxNickName = then;
+            updated.set( true );
+        } );
+        Optional.ofNullable( avatarImageUrl ).filter( when -> !Objects.equals( when, this.avatarImageUrl( ) ) ).ifPresent( then -> {
+            this.avatar = this.wxAvatarOf( then );
+            updated.set( true );
+        } );
     }
 
     @Getter

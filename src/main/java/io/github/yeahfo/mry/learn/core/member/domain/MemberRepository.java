@@ -2,6 +2,8 @@ package io.github.yeahfo.mry.learn.core.member.domain;
 
 import io.github.yeahfo.mry.learn.core.common.domain.AggregateRootRepository;
 
+import java.util.Optional;
+
 public interface MemberRepository extends AggregateRootRepository< Member, String > {
     boolean existsByMobile( String mobile );
 
@@ -10,4 +12,6 @@ public interface MemberRepository extends AggregateRootRepository< Member, Strin
     boolean existsByCustomId( String customId, String tenantId );
 
     boolean existsByMobileOrEmail( String mobileOrEmail );
+
+    Optional< Member > findByMobileOrEmail( String mobileOrEmail );
 }
