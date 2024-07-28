@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static io.github.yeahfo.mry.learn.common.spring.SpringCommonConfiguration.AUTHORIZATION_BEARER_JWT;
 import static io.github.yeahfo.mry.learn.core.common.utils.IdentifierRepresentation.identifier;
@@ -28,6 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class VerificationResource {
     private final VerificationCodeApplicationService applicationService;
 
+    @ResponseStatus( CREATED )
     @PostMapping( value = "/for-register", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
     public ResponseEntity< IdentifierRepresentation > createVerificationCodeForRegister(
             @RequestBody @Valid CreateRegisterVerificationCodeCommand command ) {
@@ -35,6 +33,7 @@ public class VerificationResource {
         return ResponseEntity.status( CREATED ).body( identifier( verificationCodeId ) );
     }
 
+    @ResponseStatus( CREATED )
     @PostMapping( value = "/for-login",
             consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
     public ResponseEntity< IdentifierRepresentation > createVerificationCodeForLogin(
@@ -43,6 +42,7 @@ public class VerificationResource {
         return ResponseEntity.status( CREATED ).body( identifier( verificationCodeId ) );
     }
 
+    @ResponseStatus( CREATED )
     @PostMapping( value = "/for-find-back-password", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
     public ResponseEntity< IdentifierRepresentation > createVerificationCodeForFindBackPassword(
             @RequestBody @Valid CreateFindBackPasswordVerificationCodeCommand command ) {
@@ -50,6 +50,7 @@ public class VerificationResource {
         return ResponseEntity.status( CREATED ).body( identifier( verificationCodeId ) );
     }
 
+    @ResponseStatus( CREATED )
     @SecurityRequirement( name = AUTHORIZATION_BEARER_JWT )
     @PostMapping( value = "/for-change-mobile", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
     public ResponseEntity< IdentifierRepresentation > createVerificationCodeForChangeMobile(
@@ -59,6 +60,7 @@ public class VerificationResource {
         return ResponseEntity.status( CREATED ).body( identifier( verificationCodeId ) );
     }
 
+    @ResponseStatus( CREATED )
     @SecurityRequirement( name = AUTHORIZATION_BEARER_JWT )
     @PostMapping( value = "/for-identity-mobile", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
     public ResponseEntity< IdentifierRepresentation > createVerificationCodeForIdentifyMobile(

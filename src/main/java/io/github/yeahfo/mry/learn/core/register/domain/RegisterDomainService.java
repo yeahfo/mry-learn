@@ -27,7 +27,6 @@ public class RegisterDomainService {
                     "mobileOrEmail", maskMobileOrEmail( mobileOrEmail ) );
         }
         Optional< String > selector = Optional.of( mobileOrEmail );
-
         return TenantFactory.make( tenantName,
                 selector.filter( CommonUtils::isMobileNumber ).orElse( null ),
                 selector.filter( CommonUtils::isEmail ).orElse( null ),

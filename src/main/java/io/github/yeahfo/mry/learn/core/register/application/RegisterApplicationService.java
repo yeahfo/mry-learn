@@ -24,8 +24,8 @@ import static io.github.yeahfo.mry.learn.core.verification.domain.VerificationCo
 import static java.util.Collections.singletonList;
 
 @Service
-public class RegisterCommandService {
-    private static final Logger log = LoggerFactory.getLogger( RegisterCommandService.class );
+public class RegisterApplicationService {
+    private static final Logger log = LoggerFactory.getLogger( RegisterApplicationService.class );
     private final RateLimiter rateLimiter;
     private final TenantRepository tenantRepository;
     private final MemberRepository memberRepository;
@@ -34,13 +34,13 @@ public class RegisterCommandService {
     private final VerificationCodeChecker verificationCodeChecker;
     private final DepartmentHierarchyRepository departmentHierarchyRepository;
 
-    public RegisterCommandService( RateLimiter rateLimiter,
-                                   TenantRepository tenantRepository,
-                                   MemberRepository memberRepository,
-                                   DomainEventPublisher domainEventPublisher,
-                                   RegisterDomainService registerDomainService,
-                                   VerificationCodeChecker verificationCodeChecker,
-                                   DepartmentHierarchyRepository departmentHierarchyRepository ) {
+    public RegisterApplicationService( RateLimiter rateLimiter,
+                                       TenantRepository tenantRepository,
+                                       MemberRepository memberRepository,
+                                       DomainEventPublisher domainEventPublisher,
+                                       RegisterDomainService registerDomainService,
+                                       VerificationCodeChecker verificationCodeChecker,
+                                       DepartmentHierarchyRepository departmentHierarchyRepository ) {
         this.rateLimiter = rateLimiter;
         this.tenantRepository = tenantRepository;
         this.memberRepository = memberRepository;
