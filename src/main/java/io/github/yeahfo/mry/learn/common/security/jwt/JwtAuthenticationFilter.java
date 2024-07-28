@@ -77,6 +77,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
         } catch ( Throwable t ) {//其他异常继续执行，之后的MryAuthenticationEntryPoint会捕捉到了
+            logger.error( t.getMessage( ), t );
             SecurityContextHolder.clearContext( );
         }
 

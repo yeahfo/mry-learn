@@ -24,7 +24,7 @@ public class MemberRepositoryImpl implements MemberRepository {
         return mongoRepository.save( member );
     }
 
-    @Cacheable( value = MEMBER_CACHE, key = "#id" )
+    @Cacheable( value = MEMBER_CACHE, key = "#id", unless = "#result == null" )
     @Override
     public Optional< Member > findById( String id ) {
         return mongoRepository.findById( id );
@@ -48,8 +48,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public boolean existsByMobileOrEmail( String mobileOrEmail ) {
         requireNonBlank( mobileOrEmail, "Mobile or email must not be blank." );
-        boolean b = mongoRepository.existsByMobileOrEmail( mobileOrEmail, mobileOrEmail );
-        return b;
+        return mongoRepository.existsByMobileOrEmail( mobileOrEmail, mobileOrEmail );
     }
 
     @Override

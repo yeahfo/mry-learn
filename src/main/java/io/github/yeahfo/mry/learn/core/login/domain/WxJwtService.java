@@ -16,7 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class WxJwtService {
     private static final String MOBILE_OPEN_ID = "mo";
     private static final String PC_OPEN_ID = "po";
-    @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.secret:abcdefghijklmnopqrstuvwxyz}" )
+    @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.secret:1111111111111111111111111111111111111111111111111111111111111111}" )
     private String secret;
 
     public WxIdInfo wxIdInfoFromJwt( String jwt ) {

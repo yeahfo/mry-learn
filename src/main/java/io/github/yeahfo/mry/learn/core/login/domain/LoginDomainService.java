@@ -10,12 +10,14 @@ import io.github.yeahfo.mry.learn.core.common.exception.MryException;
 import io.github.yeahfo.mry.learn.core.member.domain.Member;
 import io.github.yeahfo.mry.learn.core.member.domain.MemberDomainService;
 import io.github.yeahfo.mry.learn.core.member.domain.MemberRepository;
+import io.github.yeahfo.mry.learn.core.verification.domain.VerificationCodeChecker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import static io.github.yeahfo.mry.learn.core.common.exception.MryException.authenticationException;
+import static io.github.yeahfo.mry.learn.core.verification.domain.VerificationCodeType.LOGIN;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -28,6 +30,7 @@ public class LoginDomainService {
     private final MemberRepository memberRepository;
     private final MemberDomainService memberDomainService;
     private final MobileWxAuthService mobileWxAuthService;
+    private final VerificationCodeChecker verificationCodeChecker;
 
     public String loginWithMobileOrEmail( String mobileOrEmail,
                                           String password,
@@ -51,6 +54,14 @@ public class LoginDomainService {
         }
 
         return jwtService.generateJwt( member.id( ) );
+    }
+
+    public String loginWithVerificationCode( String mobileOrEmail, String verification, WxIdInfo wxIdInfo ) {
+        verificationCodeChecker.check( mobileOrEmail, verification, LOGIN );
+        Member member = memberRepository.findByMobileOrEmail( mobileOrEmail )
+                .orElseThrow( MryException::authenticationException );
+        member.checkActive( );
+        return generateJwtAndTryBindWx( member, wxIdInfo );
     }
 
     private void tryBindWx( Member member, WxIdInfo wxIdInfo ) {

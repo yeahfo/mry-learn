@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
 @Builder
-public record CreateRegisterVerificationCodeCommand( @NotBlank
-                                                     @MobileOrEmail
-                                                     String mobileOrEmail ) implements Command {
+public record CreateFindBackPasswordVerificationCodeCommand( @NotBlank
+                                                             @MobileOrEmail
+                                                             String mobileOrEmail ) implements Command {
 }

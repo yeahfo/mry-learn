@@ -5,10 +5,7 @@ import io.github.yeahfo.mry.learn.core.common.domain.Role;
 import io.github.yeahfo.mry.learn.core.common.domain.UploadedFile;
 import io.github.yeahfo.mry.learn.core.common.domain.User;
 import io.github.yeahfo.mry.learn.core.common.exception.MryException;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -46,6 +43,9 @@ public class Member extends AggregateRoot {
     protected boolean active;//是否启用
     protected boolean tenantActive;//所在Tenant是否启用，通过EDA更新
     protected List< String > departmentIds;
+
+    protected Member( ) {
+    }
 
     public Member( String mobile, String email, String password, User user ) {
         super( user.memberId( ), user );
@@ -188,8 +188,10 @@ public class Member extends AggregateRoot {
     @Getter
     @Builder
     @EqualsAndHashCode
+    @NoArgsConstructor(access = PRIVATE)
     @AllArgsConstructor( access = PRIVATE )
     public static class FailedLoginCount {
+
         private static final int MAX_ALLOWED_FAILED_LOGIN_PER_DAY = 30;
 
         private LocalDate date;

@@ -26,7 +26,7 @@ import static io.github.yeahfo.mry.learn.core.common.domain.User.humanUser;
 public class JwtService {
     @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.issuer:Authorities}" )
     private String issuer;
-    @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.secret:abcdefghijklmnopqrstuvwxyz}" )
+    @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.secret:1111111111111111111111111111111111111111111111111111111111111111}" )
     private String secret;
 
     @Min( value = 60 )
@@ -64,7 +64,7 @@ public class JwtService {
 
     public CustomizedAuthenticationToken tokenFrom( String jwt ) {
         Claims claims = Jwts.parser( ).verifyWith( Keys.hmacShaKeyFor( secret.getBytes( StandardCharsets.UTF_8 ) ) ).build( )
-                .parseEncryptedClaims( jwt ).getPayload( );
+                .parseSignedClaims( jwt ).getPayload( );
         String memberId = claims.getSubject( );
         Member member = memberRepository.findById( memberId ).orElseThrow( );
         member.checkActive( );
