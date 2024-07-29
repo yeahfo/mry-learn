@@ -15,4 +15,6 @@ public interface MemberMongoRepository extends MongoRepository< Member, String >
     boolean existsByMobileOrEmail( String mobile, String email );
 
     Optional< Member > findByMobileOrEmail( String mobile, String email );
+
+    Optional< Member > findByWxUnionId( String wxUnionId );
 }

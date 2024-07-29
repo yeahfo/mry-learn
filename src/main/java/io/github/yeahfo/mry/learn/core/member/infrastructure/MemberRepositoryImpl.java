@@ -55,4 +55,10 @@ public class MemberRepositoryImpl implements MemberRepository {
     public Optional< Member > findByMobileOrEmail( String mobileOrEmail ) {
         return mongoRepository.findByMobileOrEmail( mobileOrEmail, mobileOrEmail );
     }
+
+    @Override
+    public Optional< Member > findByWxUnionId( String wxUnionId ) {
+        requireNonBlank( wxUnionId, "WxUnionId must not be blank." );
+        return mongoRepository.findByWxUnionId( wxUnionId );
+    }
 }

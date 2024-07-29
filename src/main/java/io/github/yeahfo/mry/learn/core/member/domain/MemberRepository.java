@@ -14,4 +14,6 @@ public interface MemberRepository extends AggregateRootRepository< Member, Strin
     boolean existsByMobileOrEmail( String mobileOrEmail );
 
     Optional< Member > findByMobileOrEmail( String mobileOrEmail );
+
+    Optional< Member> findByWxUnionId( String wxUnionId );
 }

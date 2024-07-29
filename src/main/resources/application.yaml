@@ -70,6 +70,7 @@ spring:
       sms-template-code: masked
       access-key: masked
       secret: masked
+
 eventuate:
   redis:
     # noinspection SpringBootApplicationYaml

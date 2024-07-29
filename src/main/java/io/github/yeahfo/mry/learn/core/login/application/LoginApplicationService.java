@@ -40,7 +40,7 @@ public class LoginApplicationService {
         } catch ( Throwable t ) {
             //401或409时直接抛出异常
             if ( t instanceof MryException mryException &&
-                    ( mryException.getCode( ).getStatus( ) == 401 || mryException.getCode( ).getStatus( ) == 409 ) ) {
+                 ( mryException.getCode( ).getStatus( ) == 401 || mryException.getCode( ).getStatus( ) == 409 ) ) {
                 log.warn( "Password login failed for [{}].", maskMobileOrEmail( mobileOrEmail ) );
                 throw mryException;
             }
@@ -65,7 +65,7 @@ public class LoginApplicationService {
         } catch ( Throwable t ) {
             //401或409时直接抛出异常
             if ( t instanceof MryException mryException &&
-                    ( mryException.getCode( ).getStatus( ) == 401 || mryException.getCode( ).getStatus( ) == 409 ) ) {
+                 ( mryException.getCode( ).getStatus( ) == 401 || mryException.getCode( ).getStatus( ) == 409 ) ) {
                 log.warn( "Verification code login failed for [{}].", maskMobileOrEmail( mobileOrEmail ) );
                 throw mryException;
             }
@@ -82,5 +82,10 @@ public class LoginApplicationService {
         Member member = memberRepository.findById( user.memberId( ) ).orElseThrow( MryException::authenticationException );
         log.info( "User[{}] refreshed token.", user.memberId( ) );
         return jwtService.generateJwt( member.id( ) );
+    }
+
+    public String wxLoginMember( String memberId ) {
+        rateLimiter.applyFor( "Login:WxLogin:All", 1000 );
+        return jwtService.generateJwt( memberId );
     }
 }

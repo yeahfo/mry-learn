@@ -2,7 +2,6 @@ package io.github.yeahfo.mry.learn.core.verification.application;
 
 import io.github.yeahfo.mry.learn.common.ratelimit.RateLimiter;
 import io.github.yeahfo.mry.learn.core.common.domain.User;
-import io.github.yeahfo.mry.learn.core.common.exception.MryException;
 import io.github.yeahfo.mry.learn.core.member.domain.MemberRepository;
 import io.github.yeahfo.mry.learn.core.verification.domain.*;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static io.github.yeahfo.mry.learn.core.common.domain.User.NOUSER;
-import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.MEMBER_WITH_MOBILE_ALREADY_EXISTS;
 import static io.github.yeahfo.mry.learn.core.common.utils.CommonUtils.maskMobileOrEmail;
 import static io.github.yeahfo.mry.learn.core.verification.domain.VerificationCode.newVerificationCodeId;
 import static io.github.yeahfo.mry.learn.core.verification.domain.VerificationCodeType.*;
@@ -82,10 +79,11 @@ public class VerificationCodeApplicationService {
         String mobile = command.mobile( );
         rateLimiter.applyFor( "VerificationCode:ChangeMobile:All", 10 );
         rateLimiter.applyFor( "VerificationCode:ChangeMobile:" + mobile, 1 );
-        Optional.of( memberRepository.existsByMobile( mobile ) ).filter( when -> !when ).orElseThrow( ( ) -> {
+
+        if ( memberRepository.existsByMobile( mobile ) ) {
             log.warn( "Mobile [{}] already exists for change mobile.", maskMobileOrEmail( mobile ) );
-            return new MryException( MEMBER_WITH_MOBILE_ALREADY_EXISTS, "要跟换的手机号已经存在", Map.of( "mobile", mobile ) );
-        } );
+            return newVerificationCodeId( );
+        }
 
         String verificationCodeId = createVerificationCode( mobile, CHANGE_MOBILE, user.tenantId( ), user );
         log.info( "Created verification code[{}] for change mobile for [{}].", verificationCodeId, maskMobileOrEmail( mobile ) );
