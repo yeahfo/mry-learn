@@ -36,10 +36,12 @@ public class DefaultMobileWxAuthService implements MobileWxAuthService {
 
     @Override
     public MobileWxAuthAccessTokenInfo fetchAccessToken( String code ) {
-        String url = String.format( "%s?appid=%s&secret=%s&code=%s&grant_type=%s",
-                tokenUri, clientId, clientSecret, code, userinfoAuthenticationMethod );
         ExtractableResponse< Response > response = given( )
-                .baseUri( url )
+                .baseUri( tokenUri )
+                .queryParam( "appid", clientId )
+                .queryParam( "secret", clientSecret )
+                .queryParam( "code", code )
+                .queryParam( "grant_type", userinfoAuthenticationMethod )
                 .when( )
                 .get( )
                 .then( )
@@ -64,9 +66,11 @@ public class DefaultMobileWxAuthService implements MobileWxAuthService {
 
     @Override
     public MobileWxAuthUserInfo fetchUserInfo( String accessToken, String mobileWxOpenId ) {
-        String uri = String.format( "%s?access_token=%s&openid=%s&lang=zh_CN", userinfoUri, accessToken, mobileWxOpenId );
         ExtractableResponse< Response > response = given( )
-                .baseUri( uri )
+                .baseUri( userinfoUri )
+                .queryParam( "access_token", accessToken )
+                .queryParam( "openid", mobileWxOpenId )
+                .queryParam( "lang", "zh_CN" )
                 .when( )
                 .get( )
                 .then( )

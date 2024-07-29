@@ -26,7 +26,7 @@ import static io.github.yeahfo.mry.learn.core.common.domain.User.humanUser;
 public class JwtService {
     @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.issuer:Authorities}" )
     private String issuer;
-    @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.secret:1111111111111111111111111111111111111111111111111111111111111111}" )
+    @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.secret:11111111111111111111111111111111}" )
     private String secret;
 
     @Min( value = 60 )
@@ -58,7 +58,7 @@ public class JwtService {
                 .issuer( issuer )
                 .issuedAt( new Date( ) )
                 .expiration( expirationDate )
-                .signWith( Keys.hmacShaKeyFor( secret.getBytes( StandardCharsets.UTF_8 ) ), Jwts.SIG.HS512 )
+                .signWith( Keys.hmacShaKeyFor( secret.getBytes( StandardCharsets.UTF_8 ) ), Jwts.SIG.HS256 )
                 .compact( );
     }
 

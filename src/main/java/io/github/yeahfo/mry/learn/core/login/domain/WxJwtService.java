@@ -20,7 +20,7 @@ public class WxJwtService {
     private static final String PC_OPEN_ID = "po";
     @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.issuer:Authorities}" )
     private String issuer;
-    @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.secret:1111111111111111111111111111111111111111111111111111111111111111}" )
+    @Value( "${spring.security.oauth2.authorizationserver.customizer.jwt.secret:11111111111111111111111111111111}" )
     private String secret;
 
     public WxIdInfo wxIdInfoFromJwt( String jwt ) {
@@ -70,7 +70,7 @@ public class WxJwtService {
                 .issuer( issuer )
                 .issuedAt( now )
                 .expiration( expirationDate )
-                .signWith( Keys.hmacShaKeyFor( secret.getBytes( StandardCharsets.UTF_8 ) ), Jwts.SIG.HS512 )
+                .signWith( Keys.hmacShaKeyFor( secret.getBytes( StandardCharsets.UTF_8 ) ), Jwts.SIG.HS256 )
                 .compact( );
     }
 }

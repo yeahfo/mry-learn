@@ -36,10 +36,12 @@ public class DefaultPcWxAuthService implements PcWxAuthService {
 
     @Override
     public PcWxAuthAccessTokenInfo fetchAccessToken( String code ) {
-        String url = String.format( "%s?appid=%s&secret=%s&code=%s&grant_type=%s",
-                tokenUri, clientId, clientSecret, code, userinfoAuthenticationMethod );
         ExtractableResponse< Response > response = given( )
-                .baseUri( url )
+                .baseUri( tokenUri )
+                .queryParam( "appid", clientId )
+                .queryParam( "secret", clientSecret )
+                .queryParam( "code", code )
+                .queryParam( "grant_type", userinfoAuthenticationMethod )
                 .when( )
                 .get( )
                 .then( )
@@ -64,9 +66,11 @@ public class DefaultPcWxAuthService implements PcWxAuthService {
 
     @Override
     public PcWxAuthUserInfo fetchUserInfo( String accessToken, String pcWxOpenId ) {
-        String uri = String.format( "%s?access_token=%s&openid=%s&lang=zh_CN", userinfoUri, accessToken, pcWxOpenId );
         ExtractableResponse< Response > response = given( )
-                .baseUri( uri )
+                .baseUri( userinfoUri )
+                .queryParam( "access_token", accessToken )
+                .queryParam( "openid", pcWxOpenId )
+                .queryParam( "lang", "zh_CN" )
                 .when( )
                 .get( )
                 .then( )
