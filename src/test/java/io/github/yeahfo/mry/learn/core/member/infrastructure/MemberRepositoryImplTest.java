@@ -26,7 +26,7 @@ class MemberRepositoryImplTest {
     void findById( ) {
         Optional< Member > byId = repository.findById( SnowflakeIdGenerator.newSnowflakeIdAsString( ) );
         byId.ifPresent( member -> {
-            System.err.println( member.id( ) );
+            System.err.println( member.identifier( ) );
             System.err.println( member.name( ) );
         } );
 

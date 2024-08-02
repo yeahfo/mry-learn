@@ -64,7 +64,7 @@ public class RegisterApplicationService {
         departmentHierarchyRepository.save( madeHolder.departmentHierarchy( ) );
         this.domainEventPublisher.publish( Tenant.class, tenant, singletonList( new TenantCreatedEvent( user ) ) );
         this.domainEventPublisher.publish( Member.class, member, singletonList( new MemberCreatedEvent( user ) ) );
-        log.info( "Registered tenant[{}] with admin member[{}].", tenant.id( ), member.id( ) );
+        log.info( "Registered tenant[{}] with admin member[{}].", tenant.identifier( ), member.identifier( ) );
         return new RegisteredRepresentation( tenant.identifier( ), member.identifier( ) );
     }
 }

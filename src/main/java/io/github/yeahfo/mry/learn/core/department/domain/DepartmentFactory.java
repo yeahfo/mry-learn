@@ -8,11 +8,11 @@ import io.github.yeahfo.mry.learn.core.department.domain.event.DepartmentDomainE
 import io.github.yeahfo.mry.learn.core.departmenthierarchy.domain.DepartmentHierarchy;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.DEPARTMENT_WITH_NAME_ALREADY_EXISTS;
+import static io.github.yeahfo.mry.learn.core.common.utils.MapUtils.mapOf;
 
 @Component
 public class DepartmentFactory {
@@ -46,13 +46,13 @@ public class DepartmentFactory {
                                        DepartmentHierarchy departmentHierarchy ) {
         Set< String > siblingDepartmentIds = departmentHierarchy.directChildDepartmentIdsUnder( parentDepartmentId );
         Set< String > siblingDepartmentNames = departmentRepository.tenantAllDepartments( tenantId ).stream( )
-                .filter( department -> siblingDepartmentIds.contains( department.identifier( ).toString( ) ) )
+                .filter( department -> siblingDepartmentIds.contains( department.identifier( ) ) )
                 .map( Department::name )
                 .collect( toImmutableSet( ) );
 
         if ( siblingDepartmentNames.contains( name ) ) {
             throw new MryException( DEPARTMENT_WITH_NAME_ALREADY_EXISTS, "创建失败，名称已被占用。",
-                    Map.of( "name", name, "tenantId", tenantId ) );
+                    mapOf( "name", name, "tenantId", tenantId ) );
         }
     }
 }

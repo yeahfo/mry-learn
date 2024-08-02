@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.SYSTEM_ERROR;
+import static io.github.yeahfo.mry.learn.core.common.utils.MapUtils.mapOf;
 import static io.restassured.RestAssured.given;
 import static java.time.Duration.ofHours;
 
@@ -61,7 +61,7 @@ public class DefaultPcWxAuthService implements PcWxAuthService {
                         .set( PC_WX_AUTH_ACCESS_TOKEN_PREFIX + userinfo.unionId( ), userinfo.accessToken( ), ofHours( 1 ) ) )
                 .findAny( )
                 .orElseThrow( ( ) -> new MryException( SYSTEM_ERROR, "Failed to get pc wx web auth access token.",
-                        Map.of( "response", response.jsonPath( ).get( ) ) ) );
+                        mapOf( "response", response.jsonPath( ).get( ) ) ) );
     }
 
     @Override
@@ -86,7 +86,7 @@ public class DefaultPcWxAuthService implements PcWxAuthService {
                         .openId( pcWxOpenId )
                         .build( ) )
                 .orElseThrow( ( ) -> new MryException( SYSTEM_ERROR, "Failed to get pc wx user info.",
-                        Map.of( "response", response.jsonPath( ).get( ) ) ) );
+                        mapOf( "response", response.jsonPath( ).get( ) ) ) );
     }
 
     @Override

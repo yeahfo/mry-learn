@@ -10,11 +10,11 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.TOO_MANY_REQUEST;
 import static io.github.yeahfo.mry.learn.core.common.utils.CommonUtils.requireNonBlank;
+import static io.github.yeahfo.mry.learn.core.common.utils.MapUtils.mapOf;
 import static java.lang.Integer.parseInt;
 import static java.time.Instant.now;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -70,7 +70,7 @@ public class RedisRateLimiter implements RateLimiter {
         String finalKey = "RateLimit:" + key;
         String count = stringRedisTemplate.opsForValue( ).get( finalKey );
         if ( isNotBlank( count ) && parseInt( count ) >= limit ) {
-            throw new MryException( TOO_MANY_REQUEST, "当前请求量过大。", Map.of( "key", finalKey ) );
+            throw new MryException( TOO_MANY_REQUEST, "当前请求量过大。", mapOf( "key", finalKey ) );
         }
 
         stringRedisTemplate.execute( new SessionCallback<>( ) {

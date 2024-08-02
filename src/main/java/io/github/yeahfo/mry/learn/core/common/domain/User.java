@@ -3,6 +3,8 @@ package io.github.yeahfo.mry.learn.core.common.domain;
 import java.util.Objects;
 
 import static io.github.yeahfo.mry.learn.core.common.domain.Role.*;
+import static io.github.yeahfo.mry.learn.core.common.exception.MryException.accessDeniedException;
+import static io.github.yeahfo.mry.learn.core.common.exception.MryException.authenticationException;
 import static io.github.yeahfo.mry.learn.core.common.utils.CommonUtils.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
@@ -26,12 +28,12 @@ public record User( String memberId,
         return new User( memberId, name, tenantId, role );
     }
 
-    public boolean isHumanUser() {
-        if (!internalIsLoggedIn()) {
+    public boolean isHumanUser( ) {
+        if ( !internalIsLoggedIn( ) ) {
             return false;
         }
 
-        return internalIsHumanUser();
+        return internalIsHumanUser( );
     }
 
     public boolean isLoggedIn( ) {
@@ -47,7 +49,37 @@ public record User( String memberId,
 
         return new User( null, null, tenantId, ROBOT );
     }
-    private boolean internalIsHumanUser() {
+
+    private boolean internalIsHumanUser( ) {
         return role == TENANT_ADMIN || role == TENANT_MEMBER;
+    }
+
+    public void checkIsTenantAdmin( ) {
+        internalCheckLoggedIn( );
+        internalCheckTenantAdmin( );
+    }
+
+    private void internalCheckLoggedIn( ) {
+        if ( !internalIsLoggedIn( ) ) {
+            throw authenticationException( );
+        }
+    }
+
+    private void internalCheckTenantAdmin( ) {
+        if ( !internalIsTenantAdmin( ) ) {
+            throw accessDeniedException( );
+        }
+    }
+
+    private boolean internalIsTenantAdmin( ) {
+        return role == TENANT_ADMIN;
+    }
+
+    public boolean isTenantAdmin( ) {
+        if ( !internalIsLoggedIn( ) ) {
+            return false;
+        }
+
+        return internalIsTenantAdmin( );
     }
 }

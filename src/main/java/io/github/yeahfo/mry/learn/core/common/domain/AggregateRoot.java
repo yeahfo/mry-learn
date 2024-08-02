@@ -86,7 +86,7 @@ public abstract class AggregateRoot implements Identified {
         return id;
     }
 
-    public String id( ) {
+    protected String id( ) {
         return id;
     }
 

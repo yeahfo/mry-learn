@@ -10,11 +10,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.TENANT_NOT_FOUND;
 import static io.github.yeahfo.mry.learn.core.common.utils.CommonUtils.requireNonBlank;
+import static io.github.yeahfo.mry.learn.core.common.utils.MapUtils.mapOf;
 import static io.github.yeahfo.mry.learn.core.common.utils.MryConstants.TENANT_COLLECTION;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -49,7 +49,7 @@ public class TenantRepositoryImpl implements TenantRepository {
         PackagesStatus packagesStatus = mongoTemplate.findOne( query, PackagesStatus.class, TENANT_COLLECTION );
 
         if ( packagesStatus == null ) {
-            throw new MryException( TENANT_NOT_FOUND, "没有找到租户。", Map.of( "id", tenantId ) );
+            throw new MryException( TENANT_NOT_FOUND, "没有找到租户。", mapOf( "id", tenantId ) );
         }
 
         return packagesStatus;

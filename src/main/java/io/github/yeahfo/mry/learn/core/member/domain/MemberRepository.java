@@ -2,6 +2,7 @@ package io.github.yeahfo.mry.learn.core.member.domain;
 
 import io.github.yeahfo.mry.learn.core.common.domain.AggregateRootRepository;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public interface MemberRepository extends AggregateRootRepository< Member, String > {
@@ -15,5 +16,9 @@ public interface MemberRepository extends AggregateRootRepository< Member, Strin
 
     Optional< Member > findByMobileOrEmail( String mobileOrEmail );
 
-    Optional< Member> findByWxUnionId( String wxUnionId );
+    Optional< Member > findByWxUnionId( String wxUnionId );
+
+    ArrayList< TenantCachedMember > findTenantCachedMembers( String tenantId );
+
+    void delete( Member member );
 }

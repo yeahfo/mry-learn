@@ -81,7 +81,7 @@ public class LoginApplicationService {
         rateLimiter.applyFor( "Login:RefreshToken:All", 1000 );
         Member member = memberRepository.findById( user.memberId( ) ).orElseThrow( MryException::authenticationException );
         log.info( "User[{}] refreshed token.", user.memberId( ) );
-        return jwtService.generateJwt( member.id( ) );
+        return jwtService.generateJwt( member.identifier( ) );
     }
 
     public String wxLoginMember( String memberId ) {

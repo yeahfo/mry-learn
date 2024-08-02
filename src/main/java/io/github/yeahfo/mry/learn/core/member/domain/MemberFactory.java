@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.*;
+import static io.github.yeahfo.mry.learn.core.common.utils.MapUtils.mapOf;
 import static java.util.Set.copyOf;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -56,15 +56,15 @@ public class MemberFactory {
         }
 
         if ( isNotBlank( mobile ) && memberRepository.existsByMobile( mobile ) ) {
-            throw new MryException( MEMBER_WITH_MOBILE_ALREADY_EXISTS, "添加成员失败，手机号已被占用。", Map.of( "mobile", mobile ) );
+            throw new MryException( MEMBER_WITH_MOBILE_ALREADY_EXISTS, "添加成员失败，手机号已被占用。", mapOf( "mobile", mobile ) );
         }
 
         if ( isNotBlank( email ) && memberRepository.existsByEmail( email ) ) {
-            throw new MryException( MEMBER_WITH_EMAIL_ALREADY_EXISTS, "添加成员失败，邮箱已被占用。", Map.of( "email", email ) );
+            throw new MryException( MEMBER_WITH_EMAIL_ALREADY_EXISTS, "添加成员失败，邮箱已被占用。", mapOf( "email", email ) );
         }
 
         if ( isNotBlank( customId ) && memberRepository.existsByCustomId( customId, tenantId ) ) {
-            throw new MryException( MEMBER_WITH_CUSTOM_ID_ALREADY_EXISTS, "添加成员失败，自定义编号已被占用。", Map.of( "customId", customId ) );
+            throw new MryException( MEMBER_WITH_CUSTOM_ID_ALREADY_EXISTS, "添加成员失败，自定义编号已被占用。", mapOf( "customId", customId ) );
         }
         Member member = new Member( name, departmentIds, mobile, email, password, customId, user );
         List< MemberDomainEvent > domainEvents = new ArrayList<>( );

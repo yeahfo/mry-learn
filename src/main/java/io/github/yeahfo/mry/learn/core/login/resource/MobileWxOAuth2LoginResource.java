@@ -54,11 +54,11 @@ public class MobileWxOAuth2LoginResource {
                         memberRepository.save( member );
                     }
                     //登录成功，植入cookie
-                    String jwt = loginApplicationService.wxLoginMember( member.id( ) );
+                    String jwt = loginApplicationService.wxLoginMember( member.identifier( ) );
                     response.addCookie( jwtCookieFactory.newJwtCookie( jwt ) );
                     //如果没有先前页面，则重定向到默认主页
                     String redirectUrl = isNotBlank( fromUrl ) ? fromUrl : defaultUrl;
-                    log.info( "Member[{}] logged in via mobile wx[unionId={}].", member.id( ), wxUnionId );
+                    log.info( "Member[{}] logged in via mobile wx[unionId={}].", member.identifier( ), wxUnionId );
                     return "redirect:" + redirectUrl;
                 } )
                 .orElseGet( ( ) -> {

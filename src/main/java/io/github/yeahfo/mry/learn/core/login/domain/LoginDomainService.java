@@ -50,10 +50,10 @@ public class LoginDomainService {
             tryBindWx( member, wxIdInfo );
         } catch ( Throwable t ) {
             log.warn( "Failed bind wx[unionId:{},mobileWxOpenId:{},pcWxOpenId:{}] to member[{}].",
-                    wxIdInfo.wxUnionId( ), wxIdInfo.mobileWxOpenId( ), wxIdInfo.pcWxOpenId( ), member.id( ), t );
+                    wxIdInfo.wxUnionId( ), wxIdInfo.mobileWxOpenId( ), wxIdInfo.pcWxOpenId( ), member.identifier( ), t );
         }
 
-        return jwtService.generateJwt( member.id( ) );
+        return jwtService.generateJwt( member.identifier( ) );
     }
 
     public String loginWithVerificationCode( String mobileOrEmail, String verification, WxIdInfo wxIdInfo ) {
@@ -83,11 +83,11 @@ public class LoginDomainService {
                     MobileWxAuthUserInfo userInfo = mobileWxAuthService.fetchUserInfo( token, mobileWxOpenId );
                     member.updateMobileWxInfo( mobileWxOpenId, userInfo.nickname( ), userInfo.headerImageUrl( ), member.toUser( ) );
                 } catch ( Throwable t ) {
-                    log.warn( "Failed to update mobile wx info for member[{}], will continue bind without these info.", member.id( ), t );
+                    log.warn( "Failed to update mobile wx info for member[{}], will continue bind without these info.", member.identifier( ), t );
                 }
             } );
 
-            log.info( "Bind mobile wx[unionId={},mobileWxOpenId={}] to member[{}].", wxUnionId, mobileWxOpenId, member.id( ) );
+            log.info( "Bind mobile wx[unionId={},mobileWxOpenId={}] to member[{}].", wxUnionId, mobileWxOpenId, member.identifier( ) );
             memberRepository.save( member );
         } else if ( isNotBlank( pcWxOpenId ) ) {
             //只要能够同时完成登录，并提供微信unionId的JWT信息，即可绑定，可能导致将先前的绑定踢掉
@@ -99,11 +99,11 @@ public class LoginDomainService {
                     PcWxAuthUserInfo userInfo = pcWxAuthService.fetchUserInfo( token, pcWxOpenId );
                     member.updatePcWxInfo( pcWxOpenId, userInfo.nickname( ), userInfo.headerImageUrl( ), member.toUser( ) );
                 } catch ( Throwable t ) {
-                    log.warn( "Failed to update pc wx info for member[{}], will continue bind without these info.", member.id( ), t );
+                    log.warn( "Failed to update pc wx info for member[{}], will continue bind without these info.", member.identifier( ), t );
                 }
             } );
 
-            log.info( "Bind pc wx[unionId={},pcWxOpenId={}] to member[{}].", wxUnionId, pcWxOpenId, member.id( ) );
+            log.info( "Bind pc wx[unionId={},pcWxOpenId={}] to member[{}].", wxUnionId, pcWxOpenId, member.identifier( ) );
             memberRepository.save( member );
         }
     }

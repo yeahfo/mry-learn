@@ -1,19 +1,27 @@
 package io.github.yeahfo.mry.learn.core.member.domain;
 
+import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import io.github.yeahfo.mry.learn.core.common.domain.AggregateRoot;
 import io.github.yeahfo.mry.learn.core.common.domain.Role;
 import io.github.yeahfo.mry.learn.core.common.domain.UploadedFile;
 import io.github.yeahfo.mry.learn.core.common.domain.User;
 import io.github.yeahfo.mry.learn.core.common.exception.MryException;
+import io.github.yeahfo.mry.learn.core.member.domain.event.MemberDeletedEvent;
+import io.github.yeahfo.mry.learn.core.member.domain.event.MemberDepartmentsChangedEvent;
+import io.github.yeahfo.mry.learn.core.member.domain.event.MemberDomainEvent;
+import io.github.yeahfo.mry.learn.core.member.domain.event.MemberNameChangedEvent;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.github.yeahfo.mry.learn.core.common.domain.Role.TENANT_ADMIN;
 import static io.github.yeahfo.mry.learn.core.common.domain.Role.TENANT_MEMBER;
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.*;
+import static io.github.yeahfo.mry.learn.core.common.utils.MapUtils.mapOf;
 import static io.github.yeahfo.mry.learn.core.common.utils.SnowflakeIdGenerator.newSnowflakeIdAsString;
 import static io.github.yeahfo.mry.learn.core.common.utils.UuidGenerator.newShortUuid;
 import static java.time.LocalDate.now;
@@ -91,18 +99,26 @@ public class Member extends AggregateRoot {
         return name;
     }
 
+    public String mobile( ) {
+        return mobile;
+    }
+
+    public String email( ) {
+        return email;
+    }
+
     public void checkActive( ) {
         if ( this.failedLoginCount.isLocked( ) ) {
-            throw new MryException( MEMBER_ALREADY_LOCKED, "当前用户已经被锁定，次日零点系统将自动解锁。", Map.of( "memberId", this.identifier( ) ) );
+            throw new MryException( MEMBER_ALREADY_LOCKED, "当前用户已经被锁定，次日零点系统将自动解锁。", mapOf( "memberId", this.identifier( ) ) );
         }
 
         if ( !this.active ) {
-            throw new MryException( MEMBER_ALREADY_DEACTIVATED, "当前用户已经被禁用。", Map.of( "memberId", this.identifier( ) ) );
+            throw new MryException( MEMBER_ALREADY_DEACTIVATED, "当前用户已经被禁用。", mapOf( "memberId", this.identifier( ) ) );
         }
 
         if ( !this.tenantActive ) {
             throw new MryException( TENANT_ALREADY_DEACTIVATED, "当前账户已经被禁用。",
-                    Map.of( "memberId", this.identifier( ), "tenantId", this.tenantId( ) ) );
+                    mapOf( "memberId", this.identifier( ), "tenantId", this.tenantId( ) ) );
         }
     }
 
@@ -185,10 +201,143 @@ public class Member extends AggregateRoot {
         } );
     }
 
+    public ResultWithDomainEvents< Member, MemberDomainEvent > update( String name, List< String > departmentIds, String mobile, String email, User user ) {
+        List< MemberDomainEvent > events = new ArrayList<>( );
+        if ( !Objects.equals( this.name, name ) ) {
+            this.name = name;
+            events.add( new MemberNameChangedEvent( name, user ) );
+        }
+        if ( !Objects.equals( this.mobile, mobile ) ) {
+            this.mobileIdentified = false;
+        }
+        this.mobile = mobile;
+        this.email = email;
+        if ( departmentIds != null ) {//传入null时，不做任何departmentIds的更新，主要用于不因为null而将已有的departmentIds更新没了
+            Set< String > removedDepartmentIds = diff( this.departmentIds, departmentIds );
+            Set< String > addedDepartmentIds = diff( departmentIds, this.departmentIds );
+            if ( isNotEmpty( removedDepartmentIds ) || isNotEmpty( addedDepartmentIds ) ) {
+                events.add( new MemberDepartmentsChangedEvent( removedDepartmentIds, addedDepartmentIds, user ) );
+            }
+            this.departmentIds = departmentIds;
+        }
+        this.addOpsLog( "更新信息", user );
+        return new ResultWithDomainEvents<>( this, events );
+    }
+
+    private Set< String > diff( List< String > list1, List< String > list2 ) {
+        HashSet< String > result = new HashSet<>( list1 );
+        result.removeAll( new HashSet<>( list2 ) );
+        return result;
+    }
+
+    public ResultWithDomainEvents< Member, MemberDomainEvent > updateRole( Role role, User user ) {
+        this.role = role;
+        this.addOpsLog( "更新角色为" + role.getRoleName( ), user );
+        return new ResultWithDomainEvents<>( this );
+    }
+
+    public ResultWithDomainEvents< Member, MemberDomainEvent > onDelete( User user ) {
+        return new ResultWithDomainEvents<>( this, new MemberDeletedEvent( user ) );
+    }
+
+    public ResultWithDomainEvents< Member, MemberDomainEvent > activate( User user ) {
+        if ( active ) {
+            return new ResultWithDomainEvents<>( this );
+        }
+
+        this.active = true;
+        addOpsLog( "启用", user );
+        return new ResultWithDomainEvents<>( this );
+    }
+
+    public ResultWithDomainEvents< Member, MemberDomainEvent > deactivate( User user ) {
+        if ( !active ) {
+            return new ResultWithDomainEvents<>( this );
+        }
+        this.active = false;
+        addOpsLog( "禁用", user );
+        return new ResultWithDomainEvents<>( this );
+    }
+
+    public ResultWithDomainEvents< Member, MemberDomainEvent > changePassword( String password, User user ) {
+        if ( Objects.equals( this.password, password ) ) {
+            return new ResultWithDomainEvents<>( this );
+        }
+        this.password = password;
+        this.addOpsLog( "重置密码", user );
+        return new ResultWithDomainEvents<>( this );
+    }
+
+    public void unbindWx( User user ) {
+        //解绑时同时解绑手机端和PC端
+        this.mobileWxOpenId = null;
+        this.pcWxOpenId = null;
+        this.wxUnionId = null;
+        this.wxNickName = null;
+        if ( isAvatarFromWx( ) ) {
+            this.avatar = null;
+        }
+        this.addOpsLog( "解绑微信", user );
+    }
+
+    private boolean isAvatarFromWx( ) {
+        return this.avatar != null && Objects.equals( this.avatar.name( ), WX_HEAD_IMAGE );
+    }
+
+    public void changeMobile( String mobile, User user ) {
+        if ( Objects.equals( this.mobile, mobile ) ) {
+            return;
+        }
+
+        this.mobile = mobile;
+        this.mobileIdentified = true;
+        this.addOpsLog( "修改手机号为[" + mobile + "]", user );
+    }
+
+    public void identifyMobile( String mobile, User user ) {
+        if ( isNotBlank( this.mobile ) && !Objects.equals( this.mobile, mobile ) ) {
+            throw new MryException( IDENTIFY_MOBILE_NOT_THE_SAME, "认证手机号与您当前账号的手机号不一致，无法完成认证。", "mobile", mobile );
+        }
+
+        this.mobile = mobile;
+        this.mobileIdentified = true;
+        this.addOpsLog( "认证手机号：" + mobile, user );
+    }
+
+    public ResultWithDomainEvents< Member, MemberDomainEvent > updateBaseSetting( String name, User user ) {
+        if ( Objects.equals( this.name, name ) ) {
+            return new ResultWithDomainEvents<>( this );
+        }
+
+        this.name = name;
+        this.addOpsLog( "更新基本设置", user );
+        return new ResultWithDomainEvents<>( this, new MemberNameChangedEvent( name, user ) );
+    }
+
+    public void updateAvatar( UploadedFile avatar, User user ) {
+        this.avatar = avatar;
+        addOpsLog( "更新头像", user );
+    }
+
+    public void deleteAvatar( User user ) {
+        this.avatar = null;
+        addOpsLog( "删除头像", user );
+    }
+
+    public void topApp( String appid, User user ) {
+        topAppIds = Stream.concat( Stream.of( appid ), this.topAppIds.stream( ) ).limit( 20 ).collect( toImmutableList( ) );
+        addOpsLog( "顶置应用[" + appid + "]", user );
+    }
+
+    public void cancelTopApp( String appid, User user ) {
+        this.topAppIds = this.topAppIds.stream( ).filter( id -> !Objects.equals( id, appid ) ).collect( toImmutableList( ) );
+        addOpsLog( "取消顶置应用[" + appid + "]", user );
+    }
+
     @Getter
     @Builder
     @EqualsAndHashCode
-    @NoArgsConstructor(access = PRIVATE)
+    @NoArgsConstructor( access = PRIVATE )
     @AllArgsConstructor( access = PRIVATE )
     public static class FailedLoginCount {
 
