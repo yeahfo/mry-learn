@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+// Override to reuse Spring Redis or Redisson starter, supports passwords.
 @Configuration
 @Import( RedissonAutoConfiguration.class )
 public class EventuateMessagingRedissonClientsConfiguration {

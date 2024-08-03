@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.RedisTemplate;
 
+// Override to reuse Spring Redis or Redisson starter, supports passwords.
 @Configuration
 @Profile( "Redis" )
 @Import( EventuateMessagingRedissonClientsConfiguration.class )

@@ -6,6 +6,7 @@ import org.redisson.api.RedissonClient;
 import java.util.Collections;
 import java.util.List;
 
+// Override to reuse Spring Redis or Redisson starter, supports passwords.
 @Getter
 public class RedissonClients {
     private final List< RedissonClient > redissonClients;

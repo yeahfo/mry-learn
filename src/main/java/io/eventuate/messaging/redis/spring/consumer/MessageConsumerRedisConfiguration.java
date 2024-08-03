@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 
+// Override to reuse Spring Redis or Redisson starter, supports passwords.
 @Configuration
 @Import( EventuateMessagingRedissonClientsConfiguration.class )
 public class MessageConsumerRedisConfiguration {
@@ -23,9 +24,6 @@ public class MessageConsumerRedisConfiguration {
                     coordinatorFactory,
                     500,
                     10000 );
-
-
-
     }
 
     @Bean
@@ -69,7 +67,7 @@ public class MessageConsumerRedisConfiguration {
                 new RedisMemberGroupManager( redisTemplate,
                         groupId,
                         memberId,
-                        2000,
+                        2000, // Default 1000ms, but on redis cluster need > 1000ms.
                         groupMembersUpdatedCallback );
     }
 
@@ -79,7 +77,7 @@ public class MessageConsumerRedisConfiguration {
                 new RedisAssignmentListener( redisTemplate,
                         groupId,
                         memberId,
-                        2000,
+                        2000, // Default 1000ms, but on redis cluster need > 1000ms.
                         assignmentUpdatedCallback );
     }
 

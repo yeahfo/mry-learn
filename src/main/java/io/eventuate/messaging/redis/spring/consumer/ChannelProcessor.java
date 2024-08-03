@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+// Override to reuse Spring Redis or Redisson starter, supports passwords.
 @SuppressWarnings( "unused" )
 public class ChannelProcessor {
     private final Logger logger = LoggerFactory.getLogger( getClass( ) );
