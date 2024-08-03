@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "eventuate.cdc.reader",
+      "type": "java.util.Map",
+      "description": "Description for eventuate.cdc.reader."
+    },
+    {
+      "name": "eventuate.cdc.pipeline",
+      "type": "java.util.Map",
+      "description": "Description for eventuate.cdc.pipeline."
+    }
+  ]
+}

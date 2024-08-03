@@ -5,23 +5,28 @@ import io.eventuate.messaging.partitionmanagement.*;
 import io.eventuate.messaging.redis.spring.common.RedissonClients;
 import io.eventuate.messaging.redis.spring.leadership.RedisLeaderSelector;
 import org.redisson.api.RedissonClient;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
+@Import( RedissonAutoConfiguration.class )
 public class MessageConsumerRedisConfiguration {
 
     @Bean
     public MessageConsumerRedisImpl messageConsumerRedis( RedisTemplate< String, String > redisTemplate,
                                                           CoordinatorFactory coordinatorFactory ) {
 
-        return new MessageConsumerRedisImpl( redisTemplate,
-                coordinatorFactory,
-                500,
-                10000 );
+            return new MessageConsumerRedisImpl( redisTemplate,
+                    coordinatorFactory,
+                    500,
+                    10000 );
+
+
+
     }
 
     @Bean
@@ -48,13 +53,12 @@ public class MessageConsumerRedisConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean
-    @ConditionalOnMissingBean
     public RedissonClients redissonClients( RedissonClient redissonClient ) {
         return new RedissonClients( redissonClient );
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public LeaderSelectorFactory leaderSelectorFactory( RedissonClients redissonClients ) {
         return ( lockId, leaderId, leaderSelectedCallback, leaderRemovedCallback ) ->
                 new RedisLeaderSelector( redissonClients,
@@ -71,7 +75,7 @@ public class MessageConsumerRedisConfiguration {
                 new RedisMemberGroupManager( redisTemplate,
                         groupId,
                         memberId,
-                        1000,
+                        2000,
                         groupMembersUpdatedCallback );
     }
 
@@ -81,7 +85,7 @@ public class MessageConsumerRedisConfiguration {
                 new RedisAssignmentListener( redisTemplate,
                         groupId,
                         memberId,
-                        1000,
+                        2000,
                         assignmentUpdatedCallback );
     }
 

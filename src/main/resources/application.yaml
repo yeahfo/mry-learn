@@ -1,6 +1,10 @@
 spring:
   application:
     name: mry-learn
+  profiles:
+    active:
+      - Redis
+      - PostgresWal
   output:
     ansi:
       enabled: always
@@ -19,8 +23,15 @@ spring:
       host: localhost
       port: 6379
       password: redispw
-      cluster:
-        nodes:
+#      password: recommend-Pa55wd
+#      cluster:
+#        nodes:
+#          - 172.16.157.202:6379
+#          - 172.16.112.205:6379
+#          - 172.16.238.56:6379
+#          - 172.16.157.222:6379
+#          - 172.16.112.201:6379
+#          - 172.16.238.24:6379
   cache:
     type: redis
   security:
@@ -74,14 +85,25 @@ spring:
       secret: masked
 
 eventuate:
-  redis:
-    # noinspection SpringBootApplicationYaml
-    servers: localhost:6380
-    # noinspection SpringBootApplicationYaml
-    partitions: 2
+  cdc:
+    reader:
+      reader1:
+        type: postgres-wal
+        datasourceurl: ${spring.datasource.url}
+        datasourceusername: ${spring.datasource.username}
+        datasourcepassword: ${spring.datasource.password}
+        datasourcedriverclassname: ${spring.datasource.driver-class-name}
+        outboxid: 1
+        leadershiplockpath: /eventuatelocal/cdc/leader/pipeline/1
+    pipeline:
+      pipeline1:
+        type: eventuate-tram
+        reader: reader1
+
 logging:
   level:
-    org.springframework.jdbc.core.JdbcTemplate: debug
+#    org.springframework.jdbc.core.JdbcTemplate: debug
+    io.eventuate: INFO
     org.springframework.data.mongodb.core.MongoTemplate: debug
-    org.springframework.jdbc.core.StatementCreatorUtils: trace
+#    org.springframework.jdbc.core.StatementCreatorUtils: trace
     io.netty.resolver.dns.DnsServerAddressStreamProviders: error

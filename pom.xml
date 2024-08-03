@@ -32,6 +32,13 @@
         <eventuate-platform-dependencies.version>2023.1.RELEASE</eventuate-platform-dependencies.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <guava.version>33.0.0-jre</guava.version>
+        <javafaker.version>1.0.2</javafaker.version>
+        <jjwt.version>0.12.6</jjwt.version>
+        <aliyun-java-sdk-core.version>4.7.0</aliyun-java-sdk-core.version>
+        <aliyun-java-sdk-dysmsapi.version>2.2.1</aliyun-java-sdk-dysmsapi.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.6.0</springdoc-openapi-starter-webmvc-ui.version>
+        <redisson-spring-boot-starter.version>3.34.1</redisson-spring-boot-starter.version>
+        <easyexcel.version>4.0.1</easyexcel.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -55,22 +62,22 @@
             <dependency>
                 <groupId>com.github.javafaker</groupId>
                 <artifactId>javafaker</artifactId>
-                <version>1.0.2</version>
+                <version>${javafaker.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt-impl</artifactId>
-                <version>0.12.6</version>
+                <version>${jjwt.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt-jackson</artifactId>
-                <version>0.12.6</version>
+                <version>${jjwt.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aliyun</groupId>
                 <artifactId>aliyun-java-sdk-core</artifactId>
-                <version>4.7.0</version>
+                <version>${aliyun-java-sdk-core.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -81,22 +88,22 @@
             <dependency>
                 <groupId>com.aliyun</groupId>
                 <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
-                <version>2.2.1</version>
+                <version>${aliyun-java-sdk-dysmsapi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-                <version>2.6.0</version>
+                <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
-                <version>3.23.1</version>
+                <version>${redisson-spring-boot-starter.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>easyexcel</artifactId>
-                <version>4.0.1</version>
+                <version>${easyexcel.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -152,6 +159,10 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
@@ -172,26 +183,15 @@
         <dependency>
             <groupId>io.eventuate.tram.core</groupId>
             <artifactId>eventuate-tram-jdbc-redis</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.redisson</groupId>
-                    <artifactId>redisson</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- The bug test of eventuate-tram-jdbc-redis only supports 3.22.0 - 3.23.1 -->
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>io.eventuate.tram.core</groupId>
             <artifactId>eventuate-tram-spring-events-starter</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.eventuate.cdc</groupId>-->
-<!--            <artifactId>eventuate-tram-cdc-connector</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.eventuate.cdc</groupId>
+            <artifactId>eventuate-tram-cdc-connector</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -253,7 +253,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
