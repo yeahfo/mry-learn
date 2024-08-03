@@ -8,4 +8,6 @@ public interface DepartmentRepository extends AggregateRootRepository< Departmen
     boolean notAllDepartmentsExist( List< String > departmentIds, String tenantId );
 
     List< Department > tenantAllDepartments( String tenantId );
+
+    List< TenantCachedDepartment > findAllDepartmentsByTenantId( String tenantId );
 }

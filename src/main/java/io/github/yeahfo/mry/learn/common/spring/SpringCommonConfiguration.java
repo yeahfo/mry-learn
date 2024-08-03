@@ -1,7 +1,7 @@
 package io.github.yeahfo.mry.learn.common.spring;
 
 import io.github.yeahfo.mry.learn.core.common.utils.CustomizedObjectMapper;
-import io.github.yeahfo.mry.learn.core.login.resource.JwtTokenRepresentation;
+import io.github.yeahfo.mry.learn.core.login.application.JwtTokenRepresentation;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;

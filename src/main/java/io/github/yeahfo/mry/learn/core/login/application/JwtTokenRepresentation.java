@@ -1,4 +1,4 @@
-package io.github.yeahfo.mry.learn.core.login.resource;
+package io.github.yeahfo.mry.learn.core.login.application;
 
 import lombok.Builder;
 

@@ -346,6 +346,18 @@ public class Member extends AggregateRoot {
         return mobileIdentified;
     }
 
+    public List< String > departmentIds( ) {
+        return departmentIds;
+    }
+
+    public String wxNickName( ) {
+        return wxNickName;
+    }
+
+    public boolean isWxBound( ) {
+        return isNotBlank( this.wxUnionId );
+    }
+
     @Getter
     @Builder
     @EqualsAndHashCode

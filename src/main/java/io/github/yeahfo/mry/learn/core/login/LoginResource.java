@@ -1,8 +1,9 @@
-package io.github.yeahfo.mry.learn.core.login.resource;
+package io.github.yeahfo.mry.learn.core.login;
 
 import io.github.yeahfo.mry.learn.common.security.IPCookieUpdater;
 import io.github.yeahfo.mry.learn.common.security.jwt.JwtCookieFactory;
 import io.github.yeahfo.mry.learn.core.common.domain.User;
+import io.github.yeahfo.mry.learn.core.login.application.JwtTokenRepresentation;
 import io.github.yeahfo.mry.learn.core.login.application.LoginApplicationService;
 import io.github.yeahfo.mry.learn.core.login.application.MobileOrEmailLoginCommand;
 import io.github.yeahfo.mry.learn.core.login.application.VerificationCodeLoginCommand;

@@ -8,6 +8,7 @@ import io.github.yeahfo.mry.learn.core.common.domain.idnode.exception.IdNodeLeve
 import io.github.yeahfo.mry.learn.core.common.exception.MryException;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.DEPARTMENT_HIERARCHY_TOO_DEEP;
@@ -40,5 +41,9 @@ public class DepartmentHierarchy extends AggregateRoot {
         } catch ( IdNodeLevelOverflowException ex ) {
             throw new MryException( DEPARTMENT_HIERARCHY_TOO_DEEP, "部门层级最多不能超过5层。", "tenantId", this.tenantId( ) );
         }
+    }
+
+    public Map< String, String > departmentFullNames( Map< String, String > departmentNames ) {
+        return this.hierarchy.fullNames(departmentNames);
     }
 }

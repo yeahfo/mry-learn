@@ -1,4 +1,4 @@
-package io.github.yeahfo.mry.learn.core.login.resource;
+package io.github.yeahfo.mry.learn.core.login;
 
 import io.github.yeahfo.mry.learn.common.ratelimit.RateLimiter;
 import io.github.yeahfo.mry.learn.common.security.jwt.JwtCookieFactory;

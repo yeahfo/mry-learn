@@ -6,8 +6,7 @@ import io.github.yeahfo.mry.learn.core.common.validation.id.app.AppId;
 import io.github.yeahfo.mry.learn.core.common.validation.id.member.MemberId;
 import io.github.yeahfo.mry.learn.core.member.application.*;
 import io.github.yeahfo.mry.learn.core.member.application.command.*;
-import io.github.yeahfo.mry.learn.core.member.application.representation.ConsoleMemberProfileRepresentation;
-import io.github.yeahfo.mry.learn.core.member.application.representation.MemberImportRepresentation;
+import io.github.yeahfo.mry.learn.core.member.application.representation.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -185,9 +184,30 @@ public class MemberResource {
         return ResponseEntity.noContent( ).build( );
     }
 
-    @GetMapping( value = "/me" )
+    @GetMapping( value = "/me", produces = APPLICATION_JSON_VALUE )
     public ResponseEntity< ConsoleMemberProfileRepresentation > fetchMyProfile( @AuthenticationPrincipal User user ) {
         ConsoleMemberProfileRepresentation profile = representationService.fetchMyProfile( user );
         return ResponseEntity.ok( profile );
+    }
+
+    @GetMapping( value = "/client/me", produces = APPLICATION_JSON_VALUE )
+    public ResponseEntity< ClientMemberProfileRepresentation > fetchMyClientProfile( @AuthenticationPrincipal User user ) {
+        return ResponseEntity.ok( representationService.fetchMyClientMemberProfile( user ) );
+    }
+
+    @GetMapping( value = "/me/info", produces = APPLICATION_JSON_VALUE )
+    public ResponseEntity< MemberInfoRepresentation > fetchMyMemberInfo( @AuthenticationPrincipal User user ) {
+        return ResponseEntity.ok( representationService.fetchMyMemberInfo( user ) );
+    }
+
+    @GetMapping( value = "/me/base-setting", produces = APPLICATION_JSON_VALUE )
+    public ResponseEntity< MemberBaseSettingRepresentation > fetchMyBaseSetting( @AuthenticationPrincipal User user ) {
+        return ResponseEntity.ok( representationService.fetchMyBaseSetting( user ) );
+    }
+
+    @PostMapping( value = "/my-managed-members", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
+    public PagedList< QListMember > listMyManagedMembers( @RequestBody @Valid ListMyManagedMembersQuery queryCommand,
+                                                          @AuthenticationPrincipal User user ) {
+        return memberQueryService.listMyManagedMembers( queryCommand, user );
     }
 }
