@@ -1,8 +1,11 @@
 package io.github.yeahfo.mry.learn.core.common.domain;
 
+import io.github.yeahfo.mry.learn.core.common.exception.MryException;
+
 import java.util.Objects;
 
 import static io.github.yeahfo.mry.learn.core.common.domain.Role.*;
+import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.WRONG_TENANT;
 import static io.github.yeahfo.mry.learn.core.common.exception.MryException.accessDeniedException;
 import static io.github.yeahfo.mry.learn.core.common.exception.MryException.authenticationException;
 import static io.github.yeahfo.mry.learn.core.common.utils.CommonUtils.requireNonBlank;
@@ -82,4 +85,23 @@ public record User( String memberId,
 
         return internalIsTenantAdmin( );
     }
+
+    public void checkIsLoggedInFor( String tenantId ) {
+        requireNonBlank( tenantId, "TenantId must not be blank." );
+
+        internalCheckLoggedIn( );
+        internalCheckTenantFor( tenantId );
+    }
+
+    private boolean isWrongTenantFor( String tenantId ) {
+        return !Objects.equals( this.tenantId, tenantId );
+    }
+
+
+    private void internalCheckTenantFor( String tenantId ) {
+        if ( isWrongTenantFor( tenantId ) ) {
+            throw new MryException( WRONG_TENANT, "租户错误。", "userTenantId", this.tenantId( ), "tenantId", tenantId );
+        }
+    }
+
 }

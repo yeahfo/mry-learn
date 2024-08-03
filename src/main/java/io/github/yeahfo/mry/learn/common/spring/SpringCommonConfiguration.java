@@ -13,9 +13,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -28,8 +31,13 @@ import static java.util.stream.Collectors.toMap;
 @EnableRetry
 @EnableCaching
 @Configuration
+@EnableTransactionManagement
 public class SpringCommonConfiguration {
 
+    @Bean
+    MongoTransactionManager mongoTransactionManager( MongoDatabaseFactory mongoDatabaseFactory ) {
+        return new MongoTransactionManager( mongoDatabaseFactory );
+    }
     @Bean
     CustomizedObjectMapper objectMapper( ) {
         return new CustomizedObjectMapper( );

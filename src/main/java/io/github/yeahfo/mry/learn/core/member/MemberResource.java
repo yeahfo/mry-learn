@@ -1,9 +1,11 @@
 package io.github.yeahfo.mry.learn.core.member;
 
+import io.github.yeahfo.mry.learn.core.common.application.PagedRepresentation;
 import io.github.yeahfo.mry.learn.core.common.domain.User;
 import io.github.yeahfo.mry.learn.core.common.utils.IdentifierRepresentation;
 import io.github.yeahfo.mry.learn.core.common.validation.id.app.AppId;
 import io.github.yeahfo.mry.learn.core.common.validation.id.member.MemberId;
+import io.github.yeahfo.mry.learn.core.common.validation.id.tenant.TenantId;
 import io.github.yeahfo.mry.learn.core.member.application.*;
 import io.github.yeahfo.mry.learn.core.member.application.command.*;
 import io.github.yeahfo.mry.learn.core.member.application.representation.*;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -205,9 +208,20 @@ public class MemberResource {
         return ResponseEntity.ok( representationService.fetchMyBaseSetting( user ) );
     }
 
-//    @PostMapping( value = "/my-managed-members", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
-//    public PagedList< QListMember > listMyManagedMembers( @RequestBody @Valid ListMyManagedMembersQuery queryCommand,
-//                                                          @AuthenticationPrincipal User user ) {
-//        return memberQueryService.listMyManagedMembers( queryCommand, user );
-//    }
+    @PostMapping( value = "/my-managed-members", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
+    public ResponseEntity< PagedRepresentation< ListMemberRepresentation > > listMyManagedMembers( @RequestBody @Valid ListMyManagedMembersCommand command,
+                                                                                                   @AuthenticationPrincipal User user ) {
+        return ResponseEntity.ok( representationService.listMyManagedMembers( command, user ) );
+    }
+
+    @GetMapping( value = "/all-references", produces = APPLICATION_JSON_VALUE )
+    public ResponseEntity< List< MemberReferenceRepresentation > > listMemberReferences( @AuthenticationPrincipal User user ) {
+        return ResponseEntity.ok( representationService.listMemberReferences( user ) );
+    }
+
+    @GetMapping( value = "/all-references/{tenantId}", produces = APPLICATION_JSON_VALUE )
+    public ResponseEntity< List< MemberReferenceRepresentation > > listMemberReferencesForTenant( @PathVariable @NotBlank @TenantId String tenantId,
+                                                                                                  @AuthenticationPrincipal User user ) {
+        return ResponseEntity.ok( representationService.listMemberReferencesForTenant( tenantId, user ) );
+    }
 }
