@@ -1,14 +1,27 @@
 services:
   mongo:
-    image: mongo:7.0.12
+    image: bitnami/mongodb:7.0.12
     environment:
+      MONGODB_ADVERTISED_HOSTNAME: 127.0.0.1
       MONGODB_DATABASE: local_db
-    volumes:
-      - ./mongo-persistence:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    command: --bind_ip_all --replSet rs0
+      MONGODB_ROOT_USER: root
+      MONGODB_ROOT_PASSWORD: root
+      MONGODB_USERNAME: mongo
+      MONGODB_PASSWORD: mongo
+      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_REPLICA_SET_KEY: rsk123456
     ports:
       - "27017:27017"
+#  mongo:
+#    image: mongo:7.0.12
+#    environment:
+#      MONGODB_DATABASE: local_db
+#    volumes:
+#      - ./mongo-persistence:/data/db
+#      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+#    command: --bind_ip_all --replSet rs0
+#    ports:
+#      - "27017:27017"
   redis:
     image: redis/redis-stack:7.2.0-v10
     ports:
