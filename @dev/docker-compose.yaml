@@ -25,7 +25,6 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres-persistence:/bitnami/postgresql
-      - ./init_eventuate_tram_schema.sql:/docker-entrypoint-initdb.d/init_eventuate_tram_schema.sql
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRESQL_EXTRA_FLAGS: >
@@ -33,32 +32,3 @@ services:
         -c timezone=Asia/Shanghai 
         -c log_timezone=Asia/Shanghai
 
-#  cdc-service:
-#    image: eventuateio/eventuate-cdc-service:0.16.0.RELEASE
-#    depends_on:
-#      - postgres
-#      - redis-streams
-#    ports:
-#      - '8090:8080'
-#    environment:
-#      SPRING_OUTPUT_ANSI_ENABLED: always
-#      SPRING_PROFILES_ACTIVE: PostgresWal,Redis
-#      EVENTUATE_REDIS_SERVERS: redis-streams:6379
-#      EVENTUATE_REDIS_PARTITIONS: 2
-#      LOGGING_LEVEL_IO_EVENTUATE: INFO
-#
-#      EVENTUATE_CDC_READER_READER1_TYPE: postgres-wal
-#      EVENTUATE_CDC_READER_READER1_DATASOURCEURL: jdbc:postgresql://postgres:5432/postgres
-#      EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME: postgres
-#      EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD: postgres
-#      EVENTUATE_CDC_READER_READER1_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
-#      EVENTUATE_CDC_READER_READER1_OUTBOXID: 1
-#      EVENTUATE_CDC_READER_READER1_LEADERSHIPLOCKPATH: /eventuatelocal/cdc/leader/pipeline/1
-#
-#      EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE: eventuate-tram
-#      EVENTUATE_CDC_PIPELINE_PIPELINE1_READER: READER1
-
-#      EVENTUATE_CDC_CLEANER_CLEANER1_PIPELINE: PIPELINE1
-#      EVENTUATE_CDC_CLEANER_CLEANER1_MESSAGE_CLEANING_ENABLED: "true"
-#      EVENTUATE_CDC_CLEANER_CLEANER1_MESSAGES_MAX_AGE_IN_SECONDS: 1
-#      EVENTUATE_CDC_CLEANER_CLEANER1_INTERVAL_IN_SECONDS: 1

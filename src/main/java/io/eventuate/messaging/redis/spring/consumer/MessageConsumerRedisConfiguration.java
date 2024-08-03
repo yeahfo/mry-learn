@@ -2,10 +2,9 @@ package io.eventuate.messaging.redis.spring.consumer;
 
 import io.eventuate.coordination.leadership.LeaderSelectorFactory;
 import io.eventuate.messaging.partitionmanagement.*;
+import io.eventuate.messaging.redis.spring.common.EventuateMessagingRedissonClientsConfiguration;
 import io.eventuate.messaging.redis.spring.common.RedissonClients;
 import io.eventuate.messaging.redis.spring.leadership.RedisLeaderSelector;
-import org.redisson.api.RedissonClient;
-import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
-@Import( RedissonAutoConfiguration.class )
+@Import( EventuateMessagingRedissonClientsConfiguration.class )
 public class MessageConsumerRedisConfiguration {
 
     @Bean
@@ -50,11 +49,6 @@ public class MessageConsumerRedisConfiguration {
                         groupId,
                         memberId,
                         10000 );
-    }
-
-    @Bean
-    public RedissonClients redissonClients( RedissonClient redissonClient ) {
-        return new RedissonClients( redissonClient );
     }
 
     @Bean

@@ -205,9 +205,9 @@ public class MemberResource {
         return ResponseEntity.ok( representationService.fetchMyBaseSetting( user ) );
     }
 
-    @PostMapping( value = "/my-managed-members", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
-    public PagedList< QListMember > listMyManagedMembers( @RequestBody @Valid ListMyManagedMembersQuery queryCommand,
-                                                          @AuthenticationPrincipal User user ) {
-        return memberQueryService.listMyManagedMembers( queryCommand, user );
-    }
+//    @PostMapping( value = "/my-managed-members", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
+//    public PagedList< QListMember > listMyManagedMembers( @RequestBody @Valid ListMyManagedMembersQuery queryCommand,
+//                                                          @AuthenticationPrincipal User user ) {
+//        return memberQueryService.listMyManagedMembers( queryCommand, user );
+//    }
 }
