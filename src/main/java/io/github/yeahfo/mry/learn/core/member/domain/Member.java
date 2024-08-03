@@ -334,6 +334,18 @@ public class Member extends AggregateRoot {
         addOpsLog( "取消顶置应用[" + appid + "]", user );
     }
 
+    public UploadedFile avatar( ) {
+        return avatar;
+    }
+
+    public List< String > toppedAppIds( ) {
+        return topAppIds;
+    }
+
+    public boolean mobileIdentified( ) {
+        return mobileIdentified;
+    }
+
     @Getter
     @Builder
     @EqualsAndHashCode

@@ -6,6 +6,8 @@ import lombok.Builder;
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.BATCH_MEMBER_IMPORT_NOT_ALLOWED;
 import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.MEMBER_COUNT_LIMIT_REACHED;
 import static io.github.yeahfo.mry.learn.core.common.utils.MapUtils.mapOf;
+import static io.github.yeahfo.mry.learn.management.SystemManageTenant.ADMIN_MEMBER_ID;
+import static io.github.yeahfo.mry.learn.management.SystemManageTenant.MANAGE_TENANT_ID;
 
 @Builder
 public record PackagesStatus(
@@ -20,6 +22,16 @@ public record PackagesStatus(
         int currentMemberCount = resourceUsage.getMemberCount( );
         return currentMemberCount >= maxAllowedMemberCount;
     }
+    public boolean isMaxAppReached() {
+        if (MANAGE_TENANT_ID.equals(id) || ADMIN_MEMBER_ID.equals(id)) {
+            return false;
+        }
+
+        int maxAllowedAppCount = packages.effectiveMaxAppCount();
+        int currentAppCount = resourceUsage.getAppCount();
+        return currentAppCount >= maxAllowedAppCount;
+    }
+
 
     public boolean isMaxSmsCountReached( ) {
         if ( resourceUsage.getSmsSentCountForCurrentMonth( ) < packages.effectiveMaxSmsCountPerMonth( ) ) {

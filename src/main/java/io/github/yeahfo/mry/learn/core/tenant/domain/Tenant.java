@@ -50,6 +50,13 @@ public class Tenant extends AggregateRoot {
         return newSnowflakeIdAsString( );
     }
 
+    public Packages packages( ) {
+        return packages;
+    }
+    public PackagesStatus packagesStatus() {
+        return PackagesStatus.builder().id(this.identifier()).packages(this.packages).resourceUsage(this.resourceUsage).build();
+    }
+
     public void updatePlanType( PlanType planType, Instant expireAt, User user ) {
         this.packages.updatePlanType( planType, expireAt );
         addOpsLog( "设置套餐为" + planType.getName( ) + "(" + ofInstant( expireAt, systemDefault( ) ) + "过期)", user );
@@ -61,5 +68,21 @@ public class Tenant extends AggregateRoot {
         if ( this.resourceUsage.getSmsSentCountForCurrentMonth( ) > this.packages.effectiveMaxSmsCountPerMonth( ) ) {
             this.packages.tryUseExtraRemainSms( );
         }
+    }
+
+    public String name( ) {
+        return name;
+    }
+
+    public String subdomainPrefix( ) {
+        return subdomainPrefix;
+    }
+
+    public boolean subdomainReady( ) {
+        return subdomainReady;
+    }
+
+    public UploadedFile logo( ) {
+        return logo;
     }
 }
