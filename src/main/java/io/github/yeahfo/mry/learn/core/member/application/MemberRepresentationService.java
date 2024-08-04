@@ -51,12 +51,12 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
-public record MemberProfileRepresentationService( RateLimiter rateLimiter,
-                                                  MongoTemplate mongoTemplate,
-                                                  TenantRepository tenantRepository,
-                                                  MemberRepository memberRepository,
-                                                  DepartmentRepository departmentRepository,
-                                                  DepartmentHierarchyRepository departmentHierarchyRepository ) {
+public record MemberRepresentationService( RateLimiter rateLimiter,
+                                           MongoTemplate mongoTemplate,
+                                           TenantRepository tenantRepository,
+                                           MemberRepository memberRepository,
+                                           DepartmentRepository departmentRepository,
+                                           DepartmentHierarchyRepository departmentHierarchyRepository ) {
     private final static Set< String > ALLOWED_SORT_FIELDS = Set.of( "name", "active" );
 
     public ConsoleMemberProfileRepresentation fetchMyProfile( User user ) {

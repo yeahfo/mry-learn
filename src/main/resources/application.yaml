@@ -23,6 +23,7 @@ spring:
       username: root
       password: root
       authentication-database: admin
+      database: local_db
     #      uri: mongodb://mongo:mongo@localhost:27017/local_db
     redis:
       host: localhost

@@ -34,10 +34,10 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping( value = "/members" )
-@Tag( name = "Member", description = "Member APIs")
+@Tag( name = "Member", description = "Member APIs.")
 public class MemberResource {
-    private final MemberApplicationService applicationService;
-    private final MemberProfileRepresentationService representationService;
+    private final MemberCommandService commandService;
+    private final MemberRepresentationService representationService;
 
 
     @ResponseStatus( CREATED )
@@ -45,7 +45,7 @@ public class MemberResource {
     @PostMapping( consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE )
     public ResponseEntity< IdentifierRepresentation > createMember( @RequestBody @Valid CreateMemberCommand command,
                                                                     @AuthenticationPrincipal User user ) {
-        String createdId = applicationService.createMember( command, user );
+        String createdId = commandService.createMember( command, user );
         return ResponseEntity.status( CREATED ).body( new IdentifierRepresentation( createdId ) );
     }
 
@@ -53,7 +53,7 @@ public class MemberResource {
     @PostMapping( value = "/import", consumes = MULTIPART_FORM_DATA_VALUE, produces = APPLICATION_JSON_VALUE )
     public ResponseEntity< MemberImportRepresentation > importMembers( @RequestParam( "file" ) @NotNull MultipartFile file,
                                                                        @AuthenticationPrincipal User user ) throws IOException {
-        MemberImportRepresentation imported = applicationService.importMembers( file.getInputStream( ), user );
+        MemberImportRepresentation imported = commandService.importMembers( file.getInputStream( ), user );
         return ResponseEntity.ok( imported );
     }
 
@@ -63,7 +63,7 @@ public class MemberResource {
     public ResponseEntity< Void > updateMember( @PathVariable @NotBlank @MemberId String memberId,
                                                 @RequestBody @Valid UpdateMemberInfoCommand command,
                                                 @AuthenticationPrincipal User user ) {
-        applicationService.updateMember( memberId, command, user );
+        commandService.updateMember( memberId, command, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -72,7 +72,7 @@ public class MemberResource {
     @SecurityRequirement( name = AUTHORIZATION_BEARER_JWT )
     public ResponseEntity< Void > deleteMember( @PathVariable( "memberId" ) @NotBlank @MemberId String memberId,
                                                 @AuthenticationPrincipal User user ) {
-        applicationService.deleteMember( memberId, user );
+        commandService.deleteMember( memberId, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -82,7 +82,7 @@ public class MemberResource {
     public ResponseEntity< Void > updateMemberRole( @PathVariable @NotBlank @MemberId String memberId,
                                                     @RequestBody @Valid UpdateMemberRoleCommand command,
                                                     @AuthenticationPrincipal User user ) {
-        applicationService.updateMemberRole( memberId, command, user );
+        commandService.updateMemberRole( memberId, command, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -91,7 +91,7 @@ public class MemberResource {
     @SecurityRequirement( name = AUTHORIZATION_BEARER_JWT )
     public ResponseEntity< Void > activateMember( @PathVariable( "memberId" ) @NotBlank @MemberId String memberId,
                                                   @AuthenticationPrincipal User user ) {
-        applicationService.activateMember( memberId, user );
+        commandService.activateMember( memberId, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -100,7 +100,7 @@ public class MemberResource {
     @SecurityRequirement( name = AUTHORIZATION_BEARER_JWT )
     public ResponseEntity< Void > deactivateMember( @PathVariable( "memberId" ) @NotBlank @MemberId String memberId,
                                                     @AuthenticationPrincipal User user ) {
-        applicationService.deactivateMember( memberId, user );
+        commandService.deactivateMember( memberId, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -110,7 +110,7 @@ public class MemberResource {
     public ResponseEntity< Void > resetPasswordForMember( @PathVariable( "memberId" ) @NotBlank @MemberId String memberId,
                                                           @RequestBody @Valid ResetMemberPasswordCommand command,
                                                           @AuthenticationPrincipal User user ) {
-        applicationService.resetPasswordForMember( memberId, command, user );
+        commandService.resetPasswordForMember( memberId, command, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -119,7 +119,7 @@ public class MemberResource {
     @DeleteMapping( value = "/{memberId}/wx", consumes = APPLICATION_JSON_VALUE )
     public ResponseEntity< Void > unbindMemberWx( @PathVariable( "memberId" ) @NotBlank @MemberId String memberId,
                                                   @AuthenticationPrincipal User user ) {
-        applicationService.unbindMemberWx( memberId, user );
+        commandService.unbindMemberWx( memberId, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -128,7 +128,7 @@ public class MemberResource {
     @PutMapping( value = "/me/password", consumes = APPLICATION_JSON_VALUE )
     public ResponseEntity< Void > changeMyPassword( @RequestBody @Valid ChangeMyPasswordCommand command,
                                                     @AuthenticationPrincipal User user ) {
-        applicationService.changeMyPassword( command, user );
+        commandService.changeMyPassword( command, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -137,7 +137,7 @@ public class MemberResource {
     @PutMapping( value = "/me/mobile", consumes = APPLICATION_JSON_VALUE )
     public ResponseEntity< Void > changeMyMobile( @RequestBody @Valid ChangeMyMobileCommand command,
                                                   @AuthenticationPrincipal User user ) {
-        applicationService.changeMyMobile( command, user );
+        commandService.changeMyMobile( command, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -146,7 +146,7 @@ public class MemberResource {
     @PutMapping( value = "/me/mobile-identification", consumes = APPLICATION_JSON_VALUE )
     public ResponseEntity< Void > identifyMyMobile( @RequestBody @Valid IdentifyMyMobileCommand command,
                                                     @AuthenticationPrincipal User user ) {
-        applicationService.identifyMyMobile( command, user );
+        commandService.identifyMyMobile( command, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -155,7 +155,7 @@ public class MemberResource {
     @PutMapping( value = "/me/base-setting", consumes = APPLICATION_JSON_VALUE )
     public ResponseEntity< Void > updateMyBaseSetting( @RequestBody @Valid UpdateMyBaseSettingCommand command,
                                                        @AuthenticationPrincipal User user ) {
-        applicationService.updateMyBaseSetting( command, user );
+        commandService.updateMyBaseSetting( command, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -164,7 +164,7 @@ public class MemberResource {
     @PutMapping( value = "/me/avatar", consumes = APPLICATION_JSON_VALUE )
     public ResponseEntity< Void > updateMyAvatar( @RequestBody @Valid UpdateMyAvatarCommand command,
                                                   @AuthenticationPrincipal User user ) {
-        applicationService.updateMyAvatar( command, user );
+        commandService.updateMyAvatar( command, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -172,7 +172,7 @@ public class MemberResource {
     @DeleteMapping( value = "/me/avatar" )
     @SecurityRequirement( name = AUTHORIZATION_BEARER_JWT )
     public ResponseEntity< Void > deleteMyAvatar( @AuthenticationPrincipal User user ) {
-        applicationService.deleteMyAvatar( user );
+        commandService.deleteMyAvatar( user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -180,14 +180,14 @@ public class MemberResource {
     @DeleteMapping( value = "/me/wx" )
     @SecurityRequirement( name = AUTHORIZATION_BEARER_JWT )
     public ResponseEntity< Void > unbindMyWx( @AuthenticationPrincipal User user ) {
-        applicationService.unbindMyWx( user );
+        commandService.unbindMyWx( user );
         return ResponseEntity.noContent( ).build( );
     }
 
     @ResponseStatus( NO_CONTENT )
     @PostMapping( value = "/find-back-password", consumes = APPLICATION_JSON_VALUE )
     public ResponseEntity< Void > findBackPassword( @RequestBody @Valid FindBackPasswordCommand command ) {
-        applicationService.findBackPassword( command );
+        commandService.findBackPassword( command );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -196,7 +196,7 @@ public class MemberResource {
     @SecurityRequirement( name = AUTHORIZATION_BEARER_JWT )
     public ResponseEntity< Void > topApp( @PathVariable( "appid" ) @NotBlank @AppId String appId,
                                           @AuthenticationPrincipal User user ) {
-        applicationService.topApp( appId, user );
+        commandService.topApp( appId, user );
         return ResponseEntity.noContent( ).build( );
     }
 
@@ -205,7 +205,7 @@ public class MemberResource {
     @SecurityRequirement( name = AUTHORIZATION_BEARER_JWT )
     public ResponseEntity< Void > cancelTopApp( @PathVariable( "appid" ) @NotBlank @AppId String appid,
                                                 @AuthenticationPrincipal User user ) {
-        applicationService.cancelTopApp( appid, user );
+        commandService.cancelTopApp( appid, user );
         return ResponseEntity.noContent( ).build( );
     }
 

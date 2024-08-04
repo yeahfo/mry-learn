@@ -1,11 +1,14 @@
 package io.github.yeahfo.mry.learn.core.tenant.domain;
 
+import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import io.github.yeahfo.mry.learn.core.common.domain.AggregateRoot;
 import io.github.yeahfo.mry.learn.core.common.domain.UploadedFile;
 import io.github.yeahfo.mry.learn.core.common.domain.User;
 import io.github.yeahfo.mry.learn.core.common.domain.invoice.InvoiceTitle;
 import io.github.yeahfo.mry.learn.core.order.domain.delivery.Consignee;
 import io.github.yeahfo.mry.learn.core.plan.domain.PlanType;
+import io.github.yeahfo.mry.learn.core.tenant.domain.event.TenantBaseSettingUpdatedEvent;
+import io.github.yeahfo.mry.learn.core.tenant.domain.event.TenantDomainEvent;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -53,8 +56,9 @@ public class Tenant extends AggregateRoot {
     public Packages packages( ) {
         return packages;
     }
-    public PackagesStatus packagesStatus() {
-        return PackagesStatus.builder().id(this.identifier()).packages(this.packages).resourceUsage(this.resourceUsage).build();
+
+    public PackagesStatus packagesStatus( ) {
+        return PackagesStatus.builder( ).id( this.identifier( ) ).packages( this.packages ).resourceUsage( this.resourceUsage ).build( );
     }
 
     public void updatePlanType( PlanType planType, Instant expireAt, User user ) {
@@ -84,5 +88,12 @@ public class Tenant extends AggregateRoot {
 
     public UploadedFile logo( ) {
         return logo;
+    }
+
+    public ResultWithDomainEvents< Tenant, TenantDomainEvent > updateBaseSetting( String name, UploadedFile loginBackground, User user ) {
+        this.name = name;
+        this.loginBackground = loginBackground;
+        addOpsLog( "更新基本设置", user );
+        return new ResultWithDomainEvents<>( this, new TenantBaseSettingUpdatedEvent( user ) );
     }
 }

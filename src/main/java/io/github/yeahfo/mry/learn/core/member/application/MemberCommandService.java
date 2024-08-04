@@ -30,7 +30,7 @@ import static io.github.yeahfo.mry.learn.core.verification.domain.VerificationCo
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MemberApplicationService {
+public class MemberCommandService {
     private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder( );
     private final RateLimiter rateLimiter;
     private final MemberFactory memberFactory;

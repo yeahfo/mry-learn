@@ -6,9 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 @SpringBootTest
-class MemberApplicationServiceTest {
+class MemberCommandServiceTest {
     @Autowired
-    private MemberApplicationService memberApplicationService;
+    private MemberCommandService memberCommandService;
     @Test
     void create( ) {
     }
