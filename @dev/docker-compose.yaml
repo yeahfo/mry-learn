@@ -4,10 +4,10 @@ services:
     environment:
       TZ: Asia/Shanghai
       MONGODB_DATABASE: local_db
-      MONGODB_ROOT_USER: root
-      MONGODB_ROOT_PASSWORD: root
       MONGODB_USERNAME: mongo
       MONGODB_PASSWORD: mongo
+      MONGODB_ROOT_USER: root
+      MONGODB_ROOT_PASSWORD: root
       MONGODB_REPLICA_SET_MODE: primary
       MONGODB_REPLICA_SET_KEY: rsk123456
       MONGODB_EXTRA_FLAGS: >
