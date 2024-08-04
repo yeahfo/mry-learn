@@ -45,6 +45,7 @@ public class ChannelProcessor {
         logger.info( "Channel processor is created (channel = {}, {})", channel, subscriptionIdentificationInfo );
     }
 
+
     public void process( ) {
         try {
             logger.info( "Channel processor started processing (channel = {}, {})", channel, subscriptionIdentificationInfo );
@@ -74,14 +75,13 @@ public class ChannelProcessor {
         }
     }
 
-    @SuppressWarnings( "LoggingSimilarMessage" )
     private void makeSureConsumerGroupExists( ) {
         logger.info( "Ensuring consumer group exists {} {}", channel, subscriberId );
         while ( running.get( ) ) {
             try {
                 logger.info( "Creating group {} {}", channel, subscriberId );
                 redisTemplate.opsForStream( ).createGroup( channel, ReadOffset.from( "0" ), subscriberId );
-                logger.info( "Ensured consumer group exists {}", channel );
+                logChannel();
                 return;
             } catch ( InvalidDataAccessApiUsageException e ) {
                 if ( isKeyDoesNotExist( e ) ) {
@@ -89,7 +89,7 @@ public class ChannelProcessor {
                     sleep( timeInMillisecondsToSleepWhenKeyDoesNotExist );
                     continue;
                 } else if ( isGroupExistsAlready( e ) ) {
-                    logger.info( "Ensured consumer group exists {}", channel );
+                   logChannel();
                     return;
                 }
                 //noinspection StringConcatenationArgumentToLogCall
@@ -97,6 +97,9 @@ public class ChannelProcessor {
                 throw e;
             }
         }
+    }
+    private void logChannel() {
+        logger.info( "Ensuring consumer group exists {}", channel );
     }
 
     private boolean isKeyDoesNotExist( InvalidDataAccessApiUsageException e ) {
