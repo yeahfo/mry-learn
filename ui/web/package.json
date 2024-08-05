@@ -3,7 +3,8 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "show_deprecated_warn_tree_commend": "pnpm ls <deprecated_package> --depth Infinity",
   "dependencies": {
