@@ -1,4 +1,4 @@
-// noinspection UnnecessaryLocalVariableJS,SqlResolve
+// noinspection UnnecessaryLocalVariableJS,SqlResolve,SqlDialectInspection
 
 import bcrypt from 'bcrypt';
 import {db} from '@vercel/postgres';
