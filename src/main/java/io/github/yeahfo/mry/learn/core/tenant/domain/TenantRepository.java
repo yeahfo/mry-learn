@@ -6,4 +6,6 @@ public interface TenantRepository extends AggregateRootRepository< Tenant, Strin
     boolean exists( String tenantId );
 
     PackagesStatus packagesStatusOf( String tenantId );
+
+    boolean existsBySubdomainPrefix( String subdomainPrefix );
 }

@@ -5,19 +5,27 @@ import io.github.yeahfo.mry.learn.core.common.domain.AggregateRoot;
 import io.github.yeahfo.mry.learn.core.common.domain.UploadedFile;
 import io.github.yeahfo.mry.learn.core.common.domain.User;
 import io.github.yeahfo.mry.learn.core.common.domain.invoice.InvoiceTitle;
+import io.github.yeahfo.mry.learn.core.common.exception.MryException;
 import io.github.yeahfo.mry.learn.core.order.domain.delivery.Consignee;
 import io.github.yeahfo.mry.learn.core.plan.domain.PlanType;
 import io.github.yeahfo.mry.learn.core.tenant.domain.event.TenantBaseSettingUpdatedEvent;
 import io.github.yeahfo.mry.learn.core.tenant.domain.event.TenantDomainEvent;
+import io.github.yeahfo.mry.learn.core.tenant.domain.event.TenantSubdomainUpdatedEvent;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.FORBIDDEN_SUBDOMAIN_PREFIX;
+import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.SUBDOMAIN_UPDATED_TOO_OFTEN;
+import static io.github.yeahfo.mry.learn.core.common.utils.MapUtils.mapOf;
 import static io.github.yeahfo.mry.learn.core.common.utils.SnowflakeIdGenerator.newSnowflakeIdAsString;
+import static java.time.Instant.now;
 import static java.time.LocalDate.ofInstant;
 import static java.time.ZoneId.systemDefault;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Tenant extends AggregateRoot {
     private static final Set< String > FORBIDDEN_SUBDOMAIN_PREFIXES = Set.of( "www", "ww", "help", "helps", "api", "apis", "image", "images",
@@ -95,5 +103,35 @@ public class Tenant extends AggregateRoot {
         this.loginBackground = loginBackground;
         addOpsLog( "更新基本设置", user );
         return new ResultWithDomainEvents<>( this, new TenantBaseSettingUpdatedEvent( user ) );
+    }
+
+    public ResultWithDomainEvents< Tenant, TenantDomainEvent > updateSubdomain( String newSubdomainPrefix, User user ) {
+        if ( isNotBlank( newSubdomainPrefix ) && FORBIDDEN_SUBDOMAIN_PREFIXES.contains( newSubdomainPrefix ) ) {
+            throw new MryException( FORBIDDEN_SUBDOMAIN_PREFIX, "不允许使用该子域名。", mapOf( "subdomainPrefix", newSubdomainPrefix ) );
+        }
+
+        List< TenantDomainEvent > events = new ArrayList<>( );
+        String oldSubdomainPrefix = this.subdomainPrefix;
+        if ( !Objects.equals( oldSubdomainPrefix, newSubdomainPrefix ) ) {
+            if ( !subdomainUpdatable( ) ) {
+                throw new MryException( SUBDOMAIN_UPDATED_TOO_OFTEN,
+                        "子域名30天内之内只能更新一次。", mapOf( "subdomainPrefix", newSubdomainPrefix ) );
+            }
+
+            this.subdomainPrefix = newSubdomainPrefix;
+            this.subdomainReady = false;
+            this.subdomainUpdatedAt = now( );
+            addOpsLog( "更新域名前缀为" + newSubdomainPrefix, user );
+            events.add( new TenantSubdomainUpdatedEvent( oldSubdomainPrefix, newSubdomainPrefix, user ) );
+        }
+        return new ResultWithDomainEvents<>( this, events );
+    }
+
+    public boolean subdomainUpdatable( ) {
+        return subdomainUpdatedAt == null || now( ).minusSeconds( 30 * 24 * 3600L ).isAfter( subdomainUpdatedAt );
+    }
+
+    public void updateLogo( UploadedFile logo, User user ) {
+
     }
 }

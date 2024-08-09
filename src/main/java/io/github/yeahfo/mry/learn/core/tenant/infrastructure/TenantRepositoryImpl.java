@@ -54,4 +54,10 @@ public class TenantRepositoryImpl implements TenantRepository {
 
         return packagesStatus;
     }
+
+    @Override
+    public boolean existsBySubdomainPrefix( String subdomainPrefix ) {
+        requireNonBlank( subdomainPrefix, "Subdomain prefix must not be blank." );
+        return mongoRepository.existsBySubdomainPrefix( subdomainPrefix );
+    }
 }

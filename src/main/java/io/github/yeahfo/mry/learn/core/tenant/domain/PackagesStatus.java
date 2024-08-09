@@ -3,8 +3,7 @@ package io.github.yeahfo.mry.learn.core.tenant.domain;
 import io.github.yeahfo.mry.learn.core.common.exception.MryException;
 import lombok.Builder;
 
-import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.BATCH_MEMBER_IMPORT_NOT_ALLOWED;
-import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.MEMBER_COUNT_LIMIT_REACHED;
+import static io.github.yeahfo.mry.learn.core.common.exception.ErrorCode.*;
 import static io.github.yeahfo.mry.learn.core.common.utils.MapUtils.mapOf;
 import static io.github.yeahfo.mry.learn.management.SystemManageTenant.ADMIN_MEMBER_ID;
 import static io.github.yeahfo.mry.learn.management.SystemManageTenant.MANAGE_TENANT_ID;
@@ -22,13 +21,14 @@ public record PackagesStatus(
         int currentMemberCount = resourceUsage.getMemberCount( );
         return currentMemberCount >= maxAllowedMemberCount;
     }
-    public boolean isMaxAppReached() {
-        if (MANAGE_TENANT_ID.equals(id) || ADMIN_MEMBER_ID.equals(id)) {
+
+    public boolean isMaxAppReached( ) {
+        if ( MANAGE_TENANT_ID.equals( id ) || ADMIN_MEMBER_ID.equals( id ) ) {
             return false;
         }
 
-        int maxAllowedAppCount = packages.effectiveMaxAppCount();
-        int currentAppCount = resourceUsage.getAppCount();
+        int maxAllowedAppCount = packages.effectiveMaxAppCount( );
+        int currentAppCount = resourceUsage.getAppCount( );
         return currentAppCount >= maxAllowedAppCount;
     }
 
@@ -95,5 +95,31 @@ public record PackagesStatus(
                     mapOf( "tenantId", tenantId( ) ) );
         }
         return maxAllowedMemberCount - currentMemberCount;//返回可上传数量
+    }
+
+    public void validateUpdateSubdomain( ) {
+        if ( !packages.customSubdomainAllowed( ) ) {
+            if ( isExpired( ) ) {
+                throw new MryException( UPDATE_SUBDOMAIN_NOT_ALLOWED,
+                        "当前套餐(" + currentPlanName( ) + ")已过期，有效套餐已降为免费版，无法设置子域名，如需设置请及时续费或升级。",
+                        mapOf( "tenantId", tenantId( ) ) );
+            }
+            throw new MryException( UPDATE_SUBDOMAIN_NOT_ALLOWED,
+                    "当前套餐(" + currentPlanName( ) + ")无法设置子域名，如需设置请及时升级。",
+                    mapOf( "tenantId", tenantId( ) ) );
+        }
+    }
+
+    public void validateUpdateLogo( ) {
+        if ( !packages.customLogoAllowed( ) ) {
+            if ( isExpired( ) ) {
+                throw new MryException( UPDATE_LOGO_NOT_ALLOWED,
+                        "当前套餐(" + currentPlanName( ) + ")已过期，有效套餐已降为免费版，无法设置Logo，如需设置请及时续费或升级。",
+                        mapOf( "tenantId", tenantId( ) ) );
+            }
+            throw new MryException( UPDATE_LOGO_NOT_ALLOWED,
+                    "当前套餐(" + currentPlanName( ) + ")无法设置Logo，如需设置请及时升级。",
+                    mapOf( "tenantId", tenantId( ) ) );
+        }
     }
 }
